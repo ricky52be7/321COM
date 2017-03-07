@@ -16,6 +16,9 @@ handlers:
 - url: .*
   script: main.app
 
+- url: /admin/.*
+  script: admin.app
+
 libraries:
 - name: webapp2
   version: "latest"
