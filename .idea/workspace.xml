@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cbe6c3e0-69d4-4b1d-a300-2162e5819d1b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/templates/base.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/templates/login.html" afterPath="$PROJECT_DIR$/www/templates/login.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -461,7 +459,14 @@
       <option name="project" value="LOCAL" />
       <updated>1488880954091</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add base template&#10;">
+      <created>1488886140856</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1488886140856</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -498,7 +503,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add folder and template lib" />
     <MESSAGE value="add login view" />
-    <option name="LAST_COMMIT_MESSAGE" value="add login view" />
+    <MESSAGE value="add base template&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="add base template&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
