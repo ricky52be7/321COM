@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SH Mall CMS - @yield('title')</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/pure-min.css"
+          integrity="sha384-CCTZv2q9I9m3UOxRLaJneXrrqKwUNOzZ6NGEUMwHtShDJ+nCoiXJCAgi05KfkLGY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/base.css">
+    <style>
+        body {
+            display: table;
+            background-color: rgb(37, 42, 58);
+        }
+
+        .container {
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .content {
+            /*text-align: center;*/
+            display: inline-block;
+            padding-left: 4em;
+            padding-right: 4em;
+            padding-top: 2em;
+            padding-bottom: 2em;
+            background-color: white;
+            border-radius: 10px;
+            -webkit-box-shadow: 5px 5px 30px 0px rgba(0, 0, 0, 0.5);
+            -moz-box-shadow: 5px 5px 30px 0px rgba(0, 0, 0, 0.5);
+            box-shadow: 5px 5px 30px 0px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <!--<div class="title">Login</div>-->
+        <form class="pure-form pure-form-stacked" method="post" action="">
+            <fieldset>
+                <label for="email">E-mail</label>
+                <input class="pure-input-1" type="text" id="email" name="email">
+                <label for="password">Password</label>
+                <input class="pure-input-1" type="password" id="password" name="password">
+                <br>
+                <button class="pure-button pure-button-primary pure-input-1" type="submit">Sign in</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -9,6 +9,10 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /css
+  static_dir: www/css
+
+#login handler
 - url: .*
   script: main.app
 
