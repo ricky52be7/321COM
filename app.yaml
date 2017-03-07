@@ -13,11 +13,12 @@ handlers:
   static_dir: www/css
 
 #login handler
-- url: .*
+- url: /
   script: main.app
 
-- url: /admin/.*
-  script: admin.app
+- url: /admin.*
+  script: admin.admin.app
+
 
 libraries:
 - name: webapp2

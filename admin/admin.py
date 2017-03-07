@@ -3,7 +3,7 @@ import os
 import webapp2
 import jinja2
 
-template_dir = os.path.join(os.path.dirname(__file__), 'www/templates')
+template_dir = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')), 'www/templates')
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(template_dir),
     extensions=['jinja2.ext.autoescape'],
@@ -20,5 +20,5 @@ class MainHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/admin.*', MainHandler)
 ], debug=True)
