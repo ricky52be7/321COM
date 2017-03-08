@@ -10,7 +10,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 
 
-class MainHandler(webapp2.RequestHandler):
+class LoginHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('login.html')
         self.response.write(template.render())
@@ -19,6 +19,12 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write("nothing")
 
 
+class MainHandler(webapp2.RedirectHandler):
+    def get(self):
+        self.response.write("123")
+
+
 app = webapp2.WSGIApplication([
-    ('/admin.*', MainHandler)
+    ('/admin.*', MainHandler),
+    ('/admin/login', LoginHandler),
 ], debug=True)
