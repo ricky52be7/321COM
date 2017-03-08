@@ -3,6 +3,8 @@ import os
 import webapp2
 import jinja2
 
+from google.appengine.api import users
+
 template_dir = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')), 'www/templates')
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(template_dir),
@@ -10,21 +12,17 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 
 
-class LoginHandler(webapp2.RequestHandler):
-    def get(self):
-        template = JINJA_ENVIRONMENT.get_template('login.html')
-        self.response.write(template.render())
-
-    def post(self):
-        self.response.write("nothing")
-
-
 class MainHandler(webapp2.RedirectHandler):
     def get(self):
-        self.response.write("123")
+        user = users.get_current_user()
+        # self.response.write(user.auth_domain())
+        template = JINJA_ENVIRONMENT.get_template('dashboard.html')
+        template_var = {
+            "logout": users.create_logout_url(self.request.path)
+        }
+        self.response.write(template.render(template_var))
 
 
 app = webapp2.WSGIApplication([
     ('/admin.*', MainHandler),
-    ('/admin/login', LoginHandler),
 ], debug=True)

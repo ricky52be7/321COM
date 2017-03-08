@@ -20,9 +20,6 @@ handlers:
   script: admin.admin.app
   login: admin
 
-- url: /admin/login
-  script: admin.admin.app
-
 
 libraries:
 - name: webapp2
