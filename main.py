@@ -32,11 +32,18 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        user = users.get_current_user()
+        if user:
+            Account.get_or_insert('id', id=user.user_id(), name=user.nickname())
+            auth_link = users.create_logout_url("/")
+        else:
+            auth_link = users.create_login_url("/")
+
+        template_var = {
+            "auth_link": auth_link
+        }
         template = JINJA_ENVIRONMENT.get_template('login.html')
         self.response.write(template.render())
-
-    def post(self):
-        self.response.write("nothing")
 
 
 class OrderAddHandler(webapp2.RequestHandler):
@@ -54,7 +61,14 @@ class OrderAddHandler(webapp2.RequestHandler):
         self.redirect("/order/add")
 
 
+class OrderHandler(webapp2.RequestHandler):
+    def get(self, order_id):
+        order = Order.get_by_id(order_id)
+        self.redirect("/")
+
+
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/order/add', OrderAddHandler),
+    ('/order/(\d+)', OrderHandler)
 ], debug=True)

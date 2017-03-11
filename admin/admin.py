@@ -22,7 +22,7 @@ class MainHandler(webapp2.RedirectHandler):
         logging.info(Order.query().fetch())
         template = JINJA_ENVIRONMENT.get_template('dashboard.html')
         template_var = {
-            "logout": users.create_logout_url(self.request.path),
+            "logout": users.create_logout_url("/"),
             "orders": Order.query().fetch(),
         }
         self.response.write(template.render(template_var))
