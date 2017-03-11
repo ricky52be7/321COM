@@ -5,7 +5,7 @@ from entities import Category
 
 
 class Product(ndb.Model):
-    name = ndb.StringProperty()
+    name = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
     category = ndb.StructuredProperty(Category)
     brand = ndb.StructuredProperty(Brand)

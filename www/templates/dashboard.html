@@ -52,16 +52,16 @@
         <th>ID</th>
         <th>Product Name</th>
         <th>Create By</th>
-        <th>Create Date</th>
+        <th>Update Date</th>
     </tr>
     </thead>
     <tbody>
-        {% for product in products %}
+        {% for order in orders %}
             <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.id }}</td>
-                <td>{{ product.id }}</td>
+                <td>{{ order.key.id() }}</td>
+                <td>{{ order.name }}</td>
+                <td>{{ order.name }}</td>
+                <td>{{ order.update_at }}</td>
             </tr>
         {% endfor %}
     </tbody>

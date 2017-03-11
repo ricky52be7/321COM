@@ -19,7 +19,9 @@ import os
 import webapp2
 import jinja2
 
-from entities import Order
+from entities.Order import Order
+from entities.Account import Account
+from google.appengine.api import users
 
 template_dir = os.path.join(os.path.dirname(__file__), 'www/templates')
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -43,10 +45,12 @@ class OrderAddHandler(webapp2.RequestHandler):
         self.response.write(template.render())
 
     def post(self):
+        user = users.get_current_user()
         name = self.request.get("name")
         desc = self.request.get("description")
-        order = Order(name=name, description=desc)
-        order.put()
+        user = Account.get_by_google_id(user.user_id())
+        # order = Order(name=name, description=desc, user=user)
+        # order.put()
         self.redirect("/order/add")
 
 

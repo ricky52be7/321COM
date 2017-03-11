@@ -2,6 +2,9 @@ import os
 
 import webapp2
 import jinja2
+import logging
+
+from entities.Order import Order
 
 from google.appengine.api import users
 
@@ -16,9 +19,11 @@ class MainHandler(webapp2.RedirectHandler):
     def get(self):
         user = users.get_current_user()
         # self.response.write(user.auth_domain())
+        logging.info(Order.query().fetch())
         template = JINJA_ENVIRONMENT.get_template('dashboard.html')
         template_var = {
-            "logout": users.create_logout_url(self.request.path)
+            "logout": users.create_logout_url(self.request.path),
+            "orders": Order.query().fetch(),
         }
         self.response.write(template.render(template_var))
 
