@@ -1,26 +1,36 @@
 {% extends "framework.html" %}
 
-{% block title %}
-Dashboard
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <style>
+        #search-form label {
+            color: #FFFFFF;
+        }
+    </style>
 {% endblock %}
 
 {% block nav %}
-<form class="pure-form pure-form-stacked">
+<form class="pure-form pure-form-stacked" id="search-form">
     <fieldset>
-        <input class="pure-input-1 pure-input-rounded" id="email" type="email" placeholder="Email">
-        <span class="pure-form-message">This is a required field.</span>
+        <input class="pure-input-1 pure-input-rounded" id="search" type="text" placeholder="Search">
 
-        <select id="state">
-            <option>AL</option>
-            <option>CA</option>
-            <option>IL</option>
+        <label for="category">Category</label>
+        <select id="category">
+            {% for category in categories %}
+                <option>{{ category.name }}</option>
+            {% endfor %}
         </select>
 
-        <label for="remember" class="pure-checkbox">
-            <input id="remember" type="checkbox"> Remember me
-        </label>
+        <label for="brand">Brand</label>
+        <select id="brand">
+            {% for brand in brands %}
+                <option>{{ brand.name }}</option>
+            {% endfor %}
+        </select>
 
-        <button type="submit" class="pure-button pure-button-primary">Sign in</button>
+        <button type="submit" class="pure-button pure-button-primary">Search</button>
     </fieldset>
 </form>
 {% endblock %}
