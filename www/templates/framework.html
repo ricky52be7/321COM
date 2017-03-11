@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/css/sidebar.css">
+{% endblock %}
+
+{% block body %}
+<div id="layout" class="content pure-g">
+    <div id="nav" class="pure-u">
+        <a href="#" class="nav-menu-button">Menu</a>
+        <div class="nav-inner">
+            {% block nav %}{% endblock %}
+        </div>
+    </div>
+    <div id="main" class="pure-u-1">
+        <div class="main-content-header pure-g">
+            {% block content_header %}{% endblock %}
+        </div>
+        <div class="main-content-body">
+            {% block content_body %}{% endblock %}
+        </div>
+    </div>
+</div>
+<script src="https://yui-s.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+<script>
+        YUI().use('node-base', 'node-event-delegate', function (Y) {
+
+            var menuButton = Y.one('.nav-menu-button'),
+                nav        = Y.one('#nav');
+
+            // Setting the active class name expands the menu vertically on small screens.
+            menuButton.on('click', function (e) {
+                nav.toggleClass('active');
+            });
+        });
+    </script>
+{% endblock %}

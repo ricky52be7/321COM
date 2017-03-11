@@ -35,6 +35,13 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write("nothing")
 
 
+class OrderAddHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('order_add.html')
+        self.response.write(template.render())
+
+
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/order/add', OrderAddHandler),
 ], debug=True)

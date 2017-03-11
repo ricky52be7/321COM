@@ -12,14 +12,18 @@ handlers:
 - url: /css
   static_dir: www/css
 
-#login handler
-- url: /
+- url: /order/.*
   script: main.app
+  login: required
 
 - url: /admin.*
   script: admin.admin.app
   login: admin
+  auth_fail_action: /
 
+
+- url: /
+  script: main.app
 
 libraries:
 - name: webapp2

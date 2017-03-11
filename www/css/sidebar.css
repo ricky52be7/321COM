@@ -215,14 +215,14 @@ a {
     }
     #nav {
         margin-left: -200px; /* "left col (nav + list)" width */
-        width: 200px;
+        width: 250px;
         height: 100%;
     }
 
     /* Show the menu items on the larger screen */
     .nav-inner {
         display: block;
-        padding: 2em 0;
+        padding: 2em 1em;
     }
 
     /* Hide the "Menu" button on larger screens */
@@ -235,7 +235,7 @@ a {
         top: 0;
         right: 0;
         bottom: 0;
-        left: 200px;
+        left: 250px;
         overflow: auto;
         width: auto; /* so that it's not 100% */
     }

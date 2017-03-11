@@ -1,65 +1,59 @@
-{% extends "base.html" %}
+{% extends "framework.html" %}
 
 {% block title %}
 Dashboard
 {% endblock %}
 
-{% block head %}
-    <link rel="stylesheet" href="/css/sidebar.css">
+{% block nav %}
+<form class="pure-form pure-form-stacked">
+    <fieldset>
+        <input class="pure-input-1 pure-input-rounded" id="email" type="email" placeholder="Email">
+        <span class="pure-form-message">This is a required field.</span>
+
+        <select id="state">
+            <option>AL</option>
+            <option>CA</option>
+            <option>IL</option>
+        </select>
+
+        <label for="remember" class="pure-checkbox">
+            <input id="remember" type="checkbox"> Remember me
+        </label>
+
+        <button type="submit" class="pure-button pure-button-primary">Sign in</button>
+    </fieldset>
+</form>
 {% endblock %}
 
-{% block body %}
-    <div id="layout" class="content pure-g">
-        <div id="nav" class="pure-u">
-            <a href="#" class="nav-menu-button">Menu</a>
+{% block content_header %}
+<div class="pure-u-1-2">
+    <h1 class="main-content-title">CMS</h1>
+    <p class="main-content-subtitle">Product Management</p>
+</div>
+<div class="main-content-controls pure-u-1-2">
+    <a class="secondary-button pure-button" href="{{logout}}">Logout</a>
+</div>
+{% endblock %}
 
-            <div class="nav-inner">
-                <!--a href="{#URL::route('dashboard.main')#}" class="primary-button pure-button">SH Mall</a-->
-
-                <div class="pure-menu">
-                    <ul class="pure-menu-list">
-                        <!--li class="pure-menu-item"><a href="#" class="pure-menu-link">Inbox <span class="email-count">(2)</span></a>
-                        </li-->
-                        <!--li class="pure-menu-heading">Administration</li-->
-                        <li class="pure-menu-item"><a href="" class="pure-menu-link">Product</a></li>
-                        <li class="pure-menu-item"><a href="{{ logout }}" class="pure-menu-link">Logout</a></li>
-                        <!--li class="pure-menu-heading">Labels</li>
-                        <li class="pure-menu-item"><a href="#" class="pure-menu-link"><span
-                                        class="main-label-personal"></span>Personal</a></li>
-                        <li class="pure-menu-item"><a href="#" class="pure-menu-link"><span
-                                        class="main-label-work"></span>Work</a></li>
-                        <li class="pure-menu-item"><a href="#" class="pure-menu-link"><span
-                                        class="main-label-travel"></span>Travel</a></li-->
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div id="main" class="pure-u-1">
-            <div class="main-content-header pure-g">
-                <div class="pure-u-1-2">
-                    <!--h1 class="main-content-title">@yield('content.title')</h1>
-                    <p class="main-content-subtitle">@yield('content.subtitle')</p-->
-                </div>
-                <div class="main-content-controls pure-u-1-2">
-                    {#@yield('control')#}
-                </div>
-            </div>
-            <div class="main-content-body">
-                {#@yield('main')#}
-            </div>
-        </div>
-    </div>
-    <script src="https://yui-s.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
-    <script>
-        YUI().use('node-base', 'node-event-delegate', function (Y) {
-
-            var menuButton = Y.one('.nav-menu-button'),
-                nav        = Y.one('#nav');
-
-            // Setting the active class name expands the menu vertically on small screens.
-            menuButton.on('click', function (e) {
-                nav.toggleClass('active');
-            });
-        });
-    </script>
+{% block content_body %}
+<table class="pure-table pure-table-horizontal pure-table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Product Name</th>
+        <th>Create By</th>
+        <th>Create Date</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.id }}</td>
+                <td>{{ product.id }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

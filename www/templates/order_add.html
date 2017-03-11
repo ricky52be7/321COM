@@ -1,0 +1,23 @@
+{% extends "framework.html" %}
+
+{% block title %}Add Order{% endblock %}
+
+{% block content_body %}
+<form class="pure-form pure-form-aligned">
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="name">Order Name</label>
+            <input id="name" type="text" placeholder="Order Name" required>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="description">Description</label>
+            <input id="description" type="text" placeholder="Description">
+        </div>
+
+        <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Submit</button>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}
