@@ -24,7 +24,6 @@ from entities.Category import Category
 from entities.Order import Order
 from entities.Account import Account
 from google.appengine.api import users
-
 from entities.Product import Product
 
 template_dir = os.path.join(os.path.dirname(__file__), 'www/templates')
@@ -74,7 +73,11 @@ class OrderHandler(webapp2.RequestHandler):
 class ProductAddHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('product_add.html')
-        self.response.write(template.render())
+        template_var = {
+            "categories": Product.CATEGORIES,
+            "brands": Product.BRANDS,
+        }
+        self.response.write(template.render(template_var))
 
     def post(self):
         name = self.request.get("name")

@@ -1,22 +1,21 @@
 from google.appengine.ext import ndb
 
-from entities.Brand import Brand
-from entities.Category import Category
-
 
 class Product(ndb.Model):
+    CATEGORIES = ['', 'Test']
+    BRANDS = ['', 'Test']
+    STATUS_AVAILABLE = 1
+    STATUS_SOLD = 2
+    STATUS_HIDE = 3
+    STATUS_DELETE = 4
+
     name = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
-    category = ndb.StructuredProperty(Category)
-    brand = ndb.StructuredProperty(Brand)
+    category = ndb.StringProperty(choices=CATEGORIES)
+    brand = ndb.StringProperty(choices=BRANDS)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
     status = ndb.IntegerProperty(default=1)  # status 1 = available, 2 = sold out, 3 = hide, 4 = delete
-
-    # STATUS_AVAILABLE = 1
-    # STATUS_SOLD = 2
-    # STATUS_HIDE = 3
-    # STATUS_DELETE = 4
 
     @classmethod
     def get_by_id(cls, product_id):
