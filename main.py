@@ -19,9 +19,7 @@ import os
 import webapp2
 import jinja2
 
-from entities.Order import Order
-from entities.Account import Account
-from google.appengine.api import users
+from entities import Order
 
 template_dir = os.path.join(os.path.dirname(__file__), 'www/templates')
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -32,18 +30,11 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        user = users.get_current_user()
-        if user:
-            Account.get_or_insert('id', id=user.user_id(), name=user.nickname())
-            auth_link = users.create_logout_url("/")
-        else:
-            auth_link = users.create_login_url("/")
-
-        template_var = {
-            "auth_link": auth_link
-        }
-        template = JINJA_ENVIRONMENT.get_template('login.html')
+        template = JINJA_ENVIRONMENT.get_template('homepage.html')
         self.response.write(template.render())
+
+    def post(self):
+        self.response.write("nothing")
 
 
 class OrderAddHandler(webapp2.RequestHandler):
@@ -52,23 +43,14 @@ class OrderAddHandler(webapp2.RequestHandler):
         self.response.write(template.render())
 
     def post(self):
-        user = users.get_current_user()
         name = self.request.get("name")
         desc = self.request.get("description")
-        user = Account.get_by_google_id(user.user_id())
-        # order = Order(name=name, description=desc, user=user)
-        # order.put()
+        order = Order(name=name, description=desc)
+        order.put()
         self.redirect("/order/add")
-
-
-class OrderHandler(webapp2.RequestHandler):
-    def get(self, order_id):
-        order = Order.get_by_id(order_id)
-        self.redirect("/")
 
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/order/add', OrderAddHandler),
-    ('/order/(\d+)', OrderHandler)
 ], debug=True)

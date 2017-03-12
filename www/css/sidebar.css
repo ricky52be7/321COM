@@ -3,15 +3,15 @@
  * Most of these are inherited from Base, but I want to change a few.
  */
 body {
-    color: #333;
-    background: #FFFFFF;
+    color: #FFFFFF;
+    background: #636465;
 }
 
 
 
 a {
     text-decoration: none;
-    color: #1b98f8;
+    color: #FF6B35;
 }
 
 
@@ -28,7 +28,7 @@ a {
 }
 .primary-button {
     color: #fff;
-    background: #1b98f8;
+    background: #FF6B35;
     margin: 1em 0;
 }
 .secondary-button {
@@ -53,7 +53,7 @@ a {
     width: 100%;
     height: 40px;
     position: relative;
-    background: rgb(37, 42, 58);
+    background: #636465;
     text-align: center;
 }
 /* Show the "Menu" button on phones */
@@ -100,7 +100,7 @@ a {
 #nav .pure-menu-heading {
     border-bottom: none;
     font-size:110%;
-    color: rgb(75, 113, 151);
+    color: #FF6B35;
 }
 
 /*
@@ -124,7 +124,7 @@ a {
     background: #ffc94c;
 }
 .main-label-work {
-    background: #41ccb4;
+    background: #FF6B35;
 }
 .main-label-travel {
     background: #40c365;
@@ -158,7 +158,7 @@ a {
     background: #eee;
 }
 .main-item-unread {
-    border-left: 6px solid #1b98f8;
+    border-left: 6px solid #FF6B35;
 }
 
 /* main Content Styles */
