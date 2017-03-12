@@ -50,7 +50,14 @@ class OrderAddHandler(webapp2.RequestHandler):
         self.redirect("/order/add")
 
 
+class HomePageHandler(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('homepage.html')
+        self.response.write(template.render())
+
+
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/order/add', OrderAddHandler),
+    ('/home', HomePageHandler)
 ], debug=True)
