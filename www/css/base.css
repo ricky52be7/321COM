@@ -9,3 +9,10 @@ body {
     font-weight: 100;
     font-family: 'Roboto';
 }
+
+.table-responsive {
+    width: 100%;
+    min-width: 44em;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
