@@ -1,7 +1,7 @@
 from google.appengine.ext import ndb
 
-from entities import Brand
-from entities import Category
+from entities.Brand import Brand
+from entities.Category import Category
 
 
 class Product(ndb.Model):
@@ -11,12 +11,12 @@ class Product(ndb.Model):
     brand = ndb.StructuredProperty(Brand)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
-    status = ndb.IntegerProperty(1)  # status 1 = available, 2 = sold out, 3 = hide, 4 = delete
+    status = ndb.IntegerProperty(default=1)  # status 1 = available, 2 = sold out, 3 = hide, 4 = delete
 
-    STATUS_AVAILABLE = 1
-    STATUS_SOLD = 2
-    STATUS_HIDE = 3
-    STATUS_DELETE = 4
+    # STATUS_AVAILABLE = 1
+    # STATUS_SOLD = 2
+    # STATUS_HIDE = 3
+    # STATUS_DELETE = 4
 
     @classmethod
     def get_by_id(cls, product_id):

@@ -12,11 +12,7 @@ handlers:
 - url: /css
   static_dir: www/css
 
-- url: /order/(add)
-  script: main.app
-  login: required
-
-- url: /order/(\d+)
+- url: /order.*
   script: main.app
   login: required
 

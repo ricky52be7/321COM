@@ -19,7 +19,7 @@ class MainHandler(webapp2.RedirectHandler):
     def get(self):
         user = users.get_current_user()
         # self.response.write(user.auth_domain())
-        logging.info(Order.query().fetch())
+        # logging.info(Order.query().fetch())
         template = JINJA_ENVIRONMENT.get_template('dashboard.html')
         template_var = {
             "logout": users.create_logout_url("/"),

@@ -1,0 +1,40 @@
+{% extends "framework.html" %}
+
+{% block title %}Add Product{% endblock %}
+
+{% block content_body %}
+<form class="pure-form pure-form-aligned" method="post">
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="name">Product Name</label>
+            <input id="name" name="name" type="text" placeholder="Product Name" required>
+        </div>
+
+        <div class="pure-control-group">
+            <label for="description">Description</label>
+            <input id="description" name="description" type="text" placeholder="Description">
+        </div>
+
+        <div class="pure-control-group">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                {% for category in categories %}
+                    <option value="{{ category.key.id() }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="pure-control-group">
+            <label for="brand">Brand</label>
+            <select id="brand" name="brand">
+                {% for brand in brands %}
+                    <option value="{{ brand.key.id() }}">{{ brand.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Submit</button>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}
