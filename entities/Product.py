@@ -7,7 +7,11 @@ class Product(ndb.Model):
     STATUS_AVAILABLE = 1
     STATUS_SOLD = 2
     STATUS_HIDE = 3
-    STATUS_DELETE = 4
+    STATUS_DELETED = 4
+    STATUS = {STATUS_AVAILABLE: "available",
+              STATUS_SOLD: "sold out",
+              STATUS_HIDE: "hide",
+              STATUS_DELETED: "deleted"}
 
     name = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
@@ -15,7 +19,8 @@ class Product(ndb.Model):
     brand = ndb.StringProperty(choices=BRANDS)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
-    status = ndb.IntegerProperty(default=1)  # status 1 = available, 2 = sold out, 3 = hide, 4 = delete
+    status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_AVAILABLE)
+    # status 1 = available, 2 = sold out, 3 = hide, 4 = delete
 
     @classmethod
     def get_by_id(cls, product_id):

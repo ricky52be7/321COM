@@ -91,7 +91,7 @@ class ProductAddHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/order/add', OrderAddHandler),
+    ('/order/add', OrderAddHandler),  # change to /order/(\d+)/add, new Order before change page
     ('/order/(\d+)', OrderHandler),
     ('/order/product/add', ProductAddHandler)
 ], debug=True)
