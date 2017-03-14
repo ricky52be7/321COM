@@ -1,5 +1,8 @@
 from google.appengine.ext import ndb
 
+from entities.Brand import Brand
+from entities.Category import Category
+
 
 class Product(ndb.Model):
     CATEGORIES = ['', 'Test']
@@ -15,12 +18,11 @@ class Product(ndb.Model):
 
     name = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
-    category = ndb.StringProperty(choices=CATEGORIES)
-    brand = ndb.StringProperty(choices=BRANDS)
+    category = ndb.StructuredProperty(Category)
+    brand = ndb.StructuredProperty(Brand)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_AVAILABLE)
-    # status 1 = available, 2 = sold out, 3 = hide, 4 = delete
 
     @classmethod
     def get_by_id(cls, product_id):
@@ -28,8 +30,8 @@ class Product(ndb.Model):
 
     @classmethod
     def get_available_list(cls):
-        return cls.query().filter(cls.status == 1).get()
+        return cls.query().filter(cls.status == 1).fetch()
 
     @classmethod
     def get_admin_list(cls):
-        return cls.query(cls.status != 3).get()
+        return cls.query(cls.status != 3).fetch()
