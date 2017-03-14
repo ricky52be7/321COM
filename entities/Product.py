@@ -5,28 +5,6 @@ from entities.Category import Category
 
 
 class Product(ndb.Model):
-    TYPES = ['Phone', 'Computer', 'Home Video Game Console', 'Audio', ]
-
-    PHONE_CATEGORIES = ['', 'Mobile Phone', 'SmartPhone', '123']
-
-    COMPUTER_CATEGORIES = ['', 'CPU', 'Power Supply Unit', 'Motherboard', 'Scanner/Printer', 'Mouse/Keyboard',
-                           'Harddisk', 'Web Cam', 'Chassis', 'Display Card', 'Internal DVD Writer', 'RAM', 'RAID Card',
-                           'Sound Card']
-
-    HOME_GAME_CATEGORIES = ['']
-
-    AUDIO_CATEGORIES = ['']
-
-    COMPUTER_BRANDS = ['', 'AMD', 'INTEL', 'VIA', 'AMD', 'ASUS', 'AXLE', 'BioStar', 'Callbre', 'MSI', 'ASUS', 'BenQ',
-                       'HP', 'LG', 'SamSung', 'DELL', 'Fujitsu', 'IBM', 'TOSHIBA', 'AsRock', 'ASUS', ]
-
-    PHONE_BRANDS = ['Apple', 'Asus', 'HTC', 'Huawei', 'Lenovo', 'LG', 'Microsoft', 'Nokia', 'Samsung', 'Sony',
-                    'BlackBerry']
-
-    HOME_GAME_BRANDS = ['Sony', 'Microsoft', 'Nintendo']
-
-    # 1111111hahahah123
-
     STATUS_AVAILABLE = 1
     STATUS_SOLD = 2
     STATUS_HIDE = 3
