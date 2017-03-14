@@ -18,6 +18,7 @@ import os
 
 import webapp2
 import jinja2
+import logging
 
 from entities.Brand import Brand
 from entities.Category import Category
@@ -82,8 +83,10 @@ class ProductAddHandler(webapp2.RequestHandler):
     def post(self):
         name = self.request.get("name")
         desc = self.request.get("description")
-        category = Category.get_by_id(self.request.get("category", 0))
-        brand = Brand.get_by_id(self.request.get("brand", 0))
+        category = Category.get_by_id(int(self.request.get("category")))
+        brand = Brand.get_by_id(int(self.request.get("brand")))
+        logging.info(brand)
+        logging.info(category)
         product = Product(name=name, description=desc, category=category, brand=brand)
         product.put()
         self.redirect("/order/add")

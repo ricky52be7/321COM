@@ -1,6 +1,3 @@
-from random import choice
-from string import lowercase
-
 import webapp2
 
 from entities.Brand import Brand
