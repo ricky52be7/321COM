@@ -25,6 +25,8 @@ class Product(ndb.Model):
 
     HOME_GAME_BRANDS = ['Sony', 'Microsoft', 'Nintendo']
 
+    # 1111111
+
     STATUS_AVAILABLE = 1
     STATUS_SOLD = 2
     STATUS_HIDE = 3
