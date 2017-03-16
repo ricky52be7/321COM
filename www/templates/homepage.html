@@ -40,8 +40,6 @@
             {% endfor %}
         </select>
         <button type="submit" class="pure-button pure-button-primary pure-input-1">Search</button>
-
-        <button type="submit" class="pure-button pure-button-primary pure-input-1">My Trading</button>
     </fieldset>
 </form>
 {% endblock %}
@@ -52,8 +50,9 @@
     <p class="main-content-subtitle">Browse the latest offer!</p>
 </div>
 <div class="main-content-controls pure-u-1-2">
+    <a class="secondary-button pure-button" href="#">My Trading</a>
     <a class="secondary-button pure-button" href="/order/add">Add My Products</a>
-    <a class="secondary-button pure-button" href="{{membership}}">MemberShip</a>
+    <a class="secondary-button pure-button" href="{{membership}}">Membership</a>
 </div>
 {% endblock %}
 
