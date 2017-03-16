@@ -18,12 +18,15 @@ import os
 
 import webapp2
 import jinja2
+import logging
 
 from entities.Brand import Brand
 from entities.Category import Category
 from entities.Order import Order
 from entities.Account import Account
 from google.appengine.api import users
+
+from entities.Product import Product
 
 template_dir = os.path.join(os.path.dirname(__file__), 'www/templates')
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -96,6 +99,7 @@ class HomepageHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
+            "orders": Order.query().order(Order.create_at).fetch(),
         }
         self.response.write(template.render(template_var))
 
