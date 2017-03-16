@@ -51,8 +51,16 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write(template.render())
 
 
-class OrderAddHandler(webapp2.RequestHandler):
+class OrderRedirectHandler(webapp2.RequestHandler):
     def get(self):
+        user = users.get_current_user()
+        order = Order(name="", user=Account.get_or_create(user.user_id(), user.nickname()))
+        order.put()
+        self.redirect("/order/"+str(order.key.id()))
+
+
+class OrderAddHandler(webapp2.RequestHandler):
+    def get(self, order_id):
         template = JINJA_ENVIRONMENT.get_template('order_add.html')
         self.response.write(template.render())
 
@@ -64,12 +72,6 @@ class OrderAddHandler(webapp2.RequestHandler):
         order = Order(name=name, description=desc, user=user)
         order.put()
         self.redirect("/order/add")
-
-
-class OrderHandler(webapp2.RequestHandler):
-    def get(self, order_id):
-        order = Order.get_by_id(order_id)
-        self.redirect("/")
 
 
 class ProductAddHandler(webapp2.RequestHandler):
@@ -99,14 +101,14 @@ class HomepageHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
-            "orders": Order.query().order(Order.create_at).fetch(),
+            "orders": Order.query(Order.status == Order.STATUS_AVAILABLE).order(Order.create_at).fetch(),
         }
         self.response.write(template.render(template_var))
 
 
 app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
-    ('/order/add', OrderAddHandler),  # change to /order/(\d+)/add, new Order before change page
-    ('/order/(\d+)', OrderHandler),
+    ('/order/add', OrderRedirectHandler),  # change to /order/(\d+)/add, new Order before change page
+    ('/order/(\d+)', OrderAddHandler),
     ('/order/product/add', ProductAddHandler),
 ], debug=True)
