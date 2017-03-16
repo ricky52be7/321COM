@@ -8,6 +8,10 @@
         #search-form label {
             color: #E4E4E5;
         }
+
+        #search-form button {
+            margin-bottom: 1em;
+        }
     </style>
 {% endblock %}
 
@@ -17,24 +21,22 @@
         <input class="pure-input-1 pure-input-rounded" id="search" type="text" placeholder="Search">
 
         <label for="category">Category</label>
-        <select id="category">
+        <select id="category" name="category" class="pure-input-1">
             {% for category in categories %}
-                <option>{{ category.name }}</option>
+                <option value="{{ category.key.id() }}">{{ category.name }}</option>
             {% endfor %}
         </select>
 
         <label for="brand">Brand</label>
-        <select id="brand">
+        <select id="brand" name="brand" class="pure-input-1">
             {% for brand in brands %}
-                <option>{{ brand.name }}</option>
+                <option value="{{ brand.key.id() }}">{{ brand.name }}</option>
             {% endfor %}
         </select>
-
-        <button type="submit" class="pure-button pure-button-primary">Search</button>
+        <button type="submit" class="pure-button pure-button-primary pure-input-1">Search</button>
+        <button type="submit" class="pure-button pure-button-primary pure-input-1">Add my products</button>
+        <button type="submit" class="pure-button pure-button-primary pure-input-1">My Trading</button>
     </fieldset>
-
-    <button type="submit" class="pure-button pure-button-primary">Add my products</button>
-    <button type="submit" class="pure-button pure-button-primary">My Trading    </button>
 </form>
 {% endblock %}
 
@@ -44,16 +46,14 @@
     <p class="main-content-subtitle">Browse the latest offer!</p>
 </div>
 <div class="main-content-controls pure-u-1-2">
-    <a class="secondary-button pure-button" href="{{Homepage}}">HomePage</a>
-    <a class="secondary-button pure-button" href="{{Membership}}">MemberShip</a>
-    <a class="secondary-button pure-button" href="{{CMS}}">CMS</a>
+    <a class="secondary-button pure-button" href="{{membership}}">MemberShip</a>
 </div>
 {% endblock %}
 
 {% block content_body %}
 <table class="pure-table pure-table-horizontal pure-table-striped">
     <tbody>
-        {% for order in orders() %}
+        {% for order in orders %}
             <tr>
                 <td style="width:33%"><img src="http://pythoncentral.io/wp-content/uploads/2014/03/Joey-Payne.jpg"></br><p>{{order.name}}</p><p>{{order.name}}</p><!--{{ product.id }}--></td>
             </tr>

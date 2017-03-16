@@ -93,13 +93,16 @@ class ProductAddHandler(webapp2.RequestHandler):
 class HomepageHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('homepage.html')
-        self.response.write(template.render())
+        template_var = {
+            "categories": Category.query().order(Category.name).fetch(),
+            "brands": Brand.query().order(Brand.name).fetch(),
+        }
+        self.response.write(template.render(template_var))
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
+    ('/', HomepageHandler),
     ('/order/add', OrderAddHandler),  # change to /order/(\d+)/add, new Order before change page
     ('/order/(\d+)', OrderHandler),
     ('/order/product/add', ProductAddHandler),
-    ('/home', HomepageHandler)
 ], debug=True)
