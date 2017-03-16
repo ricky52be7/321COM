@@ -36,7 +36,7 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-            Account.get_or_insert('id', id=user.user_id(), name=user.nickname())
+            Account.get_or_create(user.user_id(), user.nickname())
             auth_link = users.create_logout_url(self.request.url)
         else:
             auth_link = users.create_login_url(self.request.url)
@@ -57,7 +57,7 @@ class OrderAddHandler(webapp2.RequestHandler):
         user = users.get_current_user()
         name = self.request.get("name")
         desc = self.request.get("description", "")
-        user = Account.get_or_insert('id', id=user.user_id(), name=user.nickname())
+        user = Account.get_or_create(user.user_id(), user.nickname())
         order = Order(name=name, description=desc, user=user)
         order.put()
         self.redirect("/order/add")
@@ -72,13 +72,19 @@ class OrderHandler(webapp2.RequestHandler):
 class ProductAddHandler(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('product_add.html')
-        self.response.write(template.render())
+        template_var = {
+            "categories": Category.query().order(Category.name).fetch(),
+            "brands": Brand.query().order(Brand.name).fetch(),
+        }
+        self.response.write(template.render(template_var))
 
     def post(self):
         name = self.request.get("name")
         desc = self.request.get("description")
-        category = Category.get_by_id(self.request.get("category", 0))
-        brand = Brand.get_by_id(self.request.get("brand", 0))
+        category = Category.get_by_id(int(self.request.get("category")))
+        brand = Brand.get_by_id(int(self.request.get("brand")))
+        logging.info(brand)
+        logging.info(category)
         product = Product(name=name, description=desc, category=category, brand=brand)
         product.put()
         self.redirect("/order/add")
@@ -92,7 +98,7 @@ class HomepageHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/order/add', OrderAddHandler),
+    ('/order/add', OrderAddHandler),  # change to /order/(\d+)/add, new Order before change page
     ('/order/(\d+)', OrderHandler),
     ('/order/product/add', ProductAddHandler),
     ('/home', HomepageHandler)
