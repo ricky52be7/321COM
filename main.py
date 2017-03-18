@@ -54,28 +54,36 @@ class MainHandler(webapp2.RequestHandler):
 class OrderRedirectHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        order = Order(name="", user=Account.get_or_create(user.user_id(), user.nickname()))
+        order = Order(name="", description="", product_ids=[], user=Account.get_or_create(user.user_id(), user.nickname()))
         order.put()
         self.redirect("/order/"+str(order.key.id()))
 
 
 class OrderAddHandler(webapp2.RequestHandler):
     def get(self, order_id):
+        order = Order.get_by_id(int(order_id))
         template = JINJA_ENVIRONMENT.get_template('order_add.html')
-        self.response.write(template.render())
+        template_var = {
+            "order": order,
+            "products": Product.get_order_products(order.product_ids)
+        }
+        self.response.write(template.render(template_var))
 
-    def post(self):
+    def post(self, order_id):
         user = users.get_current_user()
-        name = self.request.get("name")
-        desc = self.request.get("description", "")
+        name = str(self.request.get("name"))
+        desc = str(self.request.get("description", ""))
         user = Account.get_or_create(user.user_id(), user.nickname())
-        order = Order(name=name, description=desc, user=user)
+        order = Order.get_by_id(int(order_id))
+        order.name = name
+        order.description = desc
+        order.user = user
         order.put()
-        self.redirect("/order/add")
+        self.redirect("/order/"+str(order.key.id()))
 
 
 class ProductAddHandler(webapp2.RequestHandler):
-    def get(self):
+    def get(self, order_id):
         template = JINJA_ENVIRONMENT.get_template('product_add.html')
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
@@ -83,16 +91,16 @@ class ProductAddHandler(webapp2.RequestHandler):
         }
         self.response.write(template.render(template_var))
 
-    def post(self):
+    def post(self, order_id):
         name = self.request.get("name")
         desc = self.request.get("description")
         category = Category.get_by_id(int(self.request.get("category")))
         brand = Brand.get_by_id(int(self.request.get("brand")))
-        logging.info(brand)
-        logging.info(category)
         product = Product(name=name, description=desc, category=category, brand=brand)
         product.put()
-        self.redirect("/order/add")
+        order = Order.get_by_id(int(order_id))
+        order.product_ids.append(product.key.id())
+        self.redirect("/order/"+str(order.key.id()))
 
 
 class HomepageHandler(webapp2.RequestHandler):
@@ -110,5 +118,5 @@ app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
     ('/order/add', OrderRedirectHandler),  # change to /order/(\d+)/add, new Order before change page
     ('/order/(\d+)', OrderAddHandler),
-    ('/order/product/add', ProductAddHandler),
+    ('/order/(\d+)/product/add', ProductAddHandler),
 ], debug=True)
