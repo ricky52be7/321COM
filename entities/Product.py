@@ -23,13 +23,13 @@ class Product(ndb.Model):
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_AVAILABLE)
 
     @classmethod
-    def get_by_id(cls, product_id):
-        return cls.query().filter(cls.id == product_id).get()
-
-    @classmethod
     def get_available_list(cls):
         return cls.query().filter(cls.status == 1).fetch()
 
     @classmethod
     def get_admin_list(cls):
         return cls.query(cls.status != 3).fetch()
+
+    @classmethod
+    def get_order_products(cls, product_ids):
+        return ndb.get_multi(product_ids)
