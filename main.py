@@ -25,6 +25,8 @@ from entities.Category import Category
 from entities.Order import Order
 from entities.Account import Account
 from google.appengine.api import users
+from google.appengine.api import images
+from google.appengine.ext import ndb
 
 from entities.Product import Product
 
@@ -88,6 +90,11 @@ class ProductAddHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
+            "img": Product.query().order(Product.img).fetch()
+            # self.response.out.write('<div><img src="/img?img_id=%s"></img>' %
+            #                         greeting.key.urlsafe())
+            # self.response.out.write('<blockquote>%s</blockquote></div>' %
+            #                         cgi.escape(greeting.content))
         }
         self.response.write(template.render(template_var))
 
@@ -97,6 +104,11 @@ class ProductAddHandler(webapp2.RequestHandler):
         category = Category.get_by_id(int(self.request.get("category")))
         brand = Brand.get_by_id(int(self.request.get("brand")))
         product = Product(name=name, description=desc, category=category, brand=brand)
+        img = self.request.get('img')
+        img = images.resize(img, 256, 256)
+        logging.info(brand)
+        logging.info(category)
+        product = Product(name=name, description=desc, category=category, brand=brand, img=img)
         product.put()
         order = Order.get_by_id(int(order_id))
         order.product_ids.append(product.key.id())
@@ -112,6 +124,18 @@ class HomepageHandler(webapp2.RequestHandler):
             "orders": Order.query(Order.status == Order.STATUS_AVAILABLE).order(Order.create_at).fetch(),
         }
         self.response.write(template.render(template_var))
+
+
+class Image(webapp2.RequestHandler):
+    def get(self):
+        greeting_key = ndb.Key(urlsafe=self.request.get('img_id'))
+        greeting = greeting_key.get()
+        if greeting.avatar:
+            self.response.headers['Content-Type'] = 'image/png'
+            self.response.out.write(greeting.avatar)
+        else:
+            self.response.out.write('No image')
+
 
 
 app = webapp2.WSGIApplication([
