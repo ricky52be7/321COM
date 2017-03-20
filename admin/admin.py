@@ -4,6 +4,8 @@ import webapp2
 import jinja2
 import logging
 
+from entities.Brand import Brand
+from entities.Category import Category
 from entities.Order import Order
 
 from google.appengine.api import users
@@ -23,7 +25,10 @@ class MainHandler(webapp2.RedirectHandler):
         template = JINJA_ENVIRONMENT.get_template('dashboard.html')
         template_var = {
             "logout": users.create_logout_url("/"),
-            "orders": Order.query().fetch(),
+            "orders": Order.query().filter(Order.status != Order.STATUS_DELETED).fetch(),
+            "categories": Category.query().order(Category.name).fetch(),
+            "brands": Brand.query().order(Brand.name).fetch(),
+            "status": Order.STATUS
         }
         self.response.write(template.render(template_var))
 

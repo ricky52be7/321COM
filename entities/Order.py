@@ -22,7 +22,7 @@ class Order(ndb.Model):
     product_ids = ndb.IntegerProperty(repeated=True)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
-    status = ndb.IntegerProperty(default=STATUS_PENDING)
+    status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_PENDING)
 
     @classmethod
     def sort_status(cls):
@@ -35,8 +35,5 @@ class Order(ndb.Model):
     @classmethod
     def search_name_lc(cls, name_key):
         name_key = name_key.lower()
-        limit = name_key[:-1] + chr(ord(name_key[-1]) +1)
+        limit = name_key[:-1] + chr(ord(name_key[-1]) + 1)
         return cls.query(Order.name_lower >= name_key, Order.name_lower < limit).fetch(50)
-
-
-

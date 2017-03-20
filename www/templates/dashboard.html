@@ -17,16 +17,16 @@
         <input class="pure-input-1 pure-input-rounded" id="search" type="text" placeholder="Search">
 
         <label for="category">Category</label>
-        <select id="category">
+        <select id="category" name="category" class="pure-input-1">
             {% for category in categories %}
-                <option>{{ category.name }}</option>
+                <option value="{{ category.key.id() }}">{{ category.name }}</option>
             {% endfor %}
         </select>
 
         <label for="brand">Brand</label>
-        <select id="brand">
+        <select id="brand" name="brand" class="pure-input-1">
             {% for brand in brands %}
-                <option>{{ brand.name }}</option>
+                <option value="{{ brand.key.id() }}">{{ brand.name }}</option>
             {% endfor %}
         </select>
 
@@ -53,6 +53,8 @@
         <th>Product Name</th>
         <th>Create By</th>
         <th>Update Date</th>
+        <th>Status</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -62,6 +64,8 @@
                 <td>{{ order.name }}</td>
                 <td>{{ order.name }}</td>
                 <td>{{ order.update_at.strftime('%Y-%m-%d %H:%m') }}</td>
+                <td>{{ status[order.status] }}</td>
+                <td><a href="/order/{{ order.key.id() }}">Edit</a></td>
             </tr>
         {% endfor %}
     </tbody>

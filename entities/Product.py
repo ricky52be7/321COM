@@ -18,7 +18,7 @@ class Product(ndb.Model):
     description = ndb.TextProperty()
     category = ndb.StructuredProperty(Category)
     brand = ndb.StructuredProperty(Brand)
-    img = ndb.BlobProperty()
+    img = ndb.BlobProperty(required=False)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_AVAILABLE)
@@ -33,4 +33,7 @@ class Product(ndb.Model):
 
     @classmethod
     def get_order_products(cls, product_ids):
-        return ndb.get_multi(product_ids)
+        products = []
+        for product_id in product_ids:
+            products.append(Product.get_by_id(product_id))
+        return products

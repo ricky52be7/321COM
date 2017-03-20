@@ -56,7 +56,10 @@ class MainHandler(webapp2.RequestHandler):
 class OrderRedirectHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        order = Order(name="", description="", product_ids=[], user=Account.get_or_create(user.user_id(), user.nickname()))
+        order = Order(name="",
+                      description="",
+                      product_ids=[],
+                      user=Account.get_or_create(user.user_id(), user.nickname()))
         order.put()
         self.redirect("/order/"+str(order.key.id()))
 
@@ -66,8 +69,10 @@ class OrderAddHandler(webapp2.RequestHandler):
         order = Order.get_by_id(int(order_id))
         template = JINJA_ENVIRONMENT.get_template('order_add.html')
         template_var = {
+            "isAdmin": users.is_current_user_admin(),
             "order": order,
-            "products": Product.get_order_products(order.product_ids)
+            "products": Product.get_order_products(order.product_ids),
+            "status": Order.STATUS
         }
         self.response.write(template.render(template_var))
 
@@ -77,9 +82,11 @@ class OrderAddHandler(webapp2.RequestHandler):
         desc = str(self.request.get("description", ""))
         user = Account.get_or_create(user.user_id(), user.nickname())
         order = Order.get_by_id(int(order_id))
+        status = int(self.request.get("status", order.status))
         order.name = name
         order.description = desc
         order.user = user
+        order.status = status
         order.put()
         self.redirect("/order/"+str(order.key.id()))
 
@@ -90,7 +97,7 @@ class ProductAddHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
-            "img": Product.query().order(Product.img).fetch()
+            # "img": Product.query().order(Product.img).fetch()
             # self.response.out.write('<div><img src="/img?img_id=%s"></img>' %
             #                         greeting.key.urlsafe())
             # self.response.out.write('<blockquote>%s</blockquote></div>' %
@@ -102,17 +109,19 @@ class ProductAddHandler(webapp2.RequestHandler):
         name = self.request.get("name")
         desc = self.request.get("description")
         category = Category.get_by_id(int(self.request.get("category")))
+        # status = self.request.get("status")
         brand = Brand.get_by_id(int(self.request.get("brand")))
+        # img = self.request.get("photo", None)
         product = Product(name=name, description=desc, category=category, brand=brand)
-        img = self.request.get('img')
-        img = images.resize(img, 256, 256)
-        logging.info(brand)
-        logging.info(category)
-        product = Product(name=name, description=desc, category=category, brand=brand, img=img)
+        # product = Product(name=name, description=desc, category=category, brand=brand, img=img)
         product.put()
         order = Order.get_by_id(int(order_id))
         order.product_ids.append(product.key.id())
-        self.redirect("/order/"+str(order.key.id()))
+        order.put()
+        if users.is_current_user_admin():
+            self.redirect("/admin")
+        else:
+            self.redirect("/order/" + str(order.key.id()))
 
 
 class HomepageHandler(webapp2.RequestHandler):
@@ -122,6 +131,7 @@ class HomepageHandler(webapp2.RequestHandler):
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
             "orders": Order.query(Order.status == Order.STATUS_AVAILABLE).order(Order.create_at).fetch(),
+            "users": users,
         }
         self.response.write(template.render(template_var))
 
@@ -137,10 +147,22 @@ class Image(webapp2.RequestHandler):
             self.response.out.write('No image')
 
 
+class MyOrdersHandler(webapp2.RequestHandler):
+    def get(self, user_id):
+        template = JINJA_ENVIRONMENT.get_template('my_order.html')
+        template_var = {
+            "categories": Category.query().order(Category.name).fetch(),
+            "brands": Brand.query().order(Brand.name).fetch(),
+            "orders": Order.query(Order.status == Order.STATUS_AVAILABLE).order(Order.create_at).fetch(),
+            "users": users,
+        }
+        self.response.write(template.render(template_var))
+
 
 app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
     ('/order/add', OrderRedirectHandler),  # change to /order/(\d+)/add, new Order before change page
     ('/order/(\d+)', OrderAddHandler),
     ('/order/(\d+)/product/add', ProductAddHandler),
+    ('/(\d+)/orders', MyOrdersHandler),
 ], debug=True)

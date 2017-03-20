@@ -27,6 +27,9 @@ handlers:
   script: admin.seeder.app
   login: admin
 
+- url: /(\d+)/orders
+  script: main.app
+
 libraries:
 - name: webapp2
   version: "latest"
