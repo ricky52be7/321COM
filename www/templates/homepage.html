@@ -53,12 +53,15 @@
 {% endblock %}
 
 {% block content_header %}
-<div class="pure-u-1-2">
+<div class="pure-u-1-3">
     <h1 class="main-content-title">HomePage</h1>
     <p class="main-content-subtitle">Browse the latest offer!</p>
 </div>
-<div class="main-content-controls pure-u-1-2">
+<div class="main-content-controls pure-u-2-3">
     {% if users.get_current_user() %}
+        {% if users.is_current_user_admin() %}
+         <a class="secondary-button pure-button" href="/admin">Dashboard</a>
+        {% endif %}
     <a class="secondary-button pure-button" href="/{{ users.get_current_user().user_id() }}/orders">My Trading</a>
     <a class="secondary-button pure-button" href="/order/add">Add My Products</a>
     <a class="secondary-button pure-button" href="{{ auth_link }}">Logout</a>

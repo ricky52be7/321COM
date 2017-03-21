@@ -1,0 +1,82 @@
+{% extends "framework.html" %}
+
+{% block title %}Add Order{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .order-cell {
+        margin: 5px;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+
+    .order-cell img {
+        border-radius: inherit;
+    }
+
+    .order-cell-desc {
+        padding: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content_header %}
+<div class="pure-u-1-3">
+    <h1 class="main-content-title">Order Details</h1>
+    <p class="main-content-subtitle"></p>
+</div>
+<div class="main-content-controls pure-u-2-3">
+    {% if users.get_current_user() %}
+        {% if users.is_current_user_admin() %}
+         <a class="secondary-button pure-button" href="/admin">Dashboard</a>
+        {% endif %}
+    <a class="secondary-button pure-button" href="/{{ users.get_current_user().user_id() }}/orders">My Trading</a>
+    <a class="secondary-button pure-button" href="/order/add">Add My Products</a>
+    <a class="secondary-button pure-button" href="{{ auth_link }}">Logout</a>
+    {% else %}
+    <a class="secondary-button pure-button" href="{{ auth_link }}">Login</a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content_body %}
+<table>
+
+</table>
+<form class="pure-form pure-form-aligned" method="post">
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="name">Order Name</label>
+            {{ order.name }}
+        </div>
+
+        <div class="pure-control-group">
+            <label for="description">Description</label>
+            {{ order.description }}
+        </div>
+
+        <div class="pure-control-group">
+            <label for="products">Products</label>
+        </div>
+        {% if products|length > 0 %}
+        <div class="pure-controls pure-g">
+            {% for product in products %}
+            <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+                <div class="order-cell">
+                    <img class="pure-img" src="http://img15.deviantart.net/c983/i/2015/122/2/a/kongou_kancolle_by_merricx-d8rvorv.jpg">
+                    <div class="order-cell-desc">
+                        <p>{{ product.name }}<br>
+                            {{ product.description }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </fieldset>
+</form>
+<div class="pure-u-1" style="text-align: center">
+    <a class="pure-button" href="offer">Trade Request</a>
+</div>
+{% endblock %}

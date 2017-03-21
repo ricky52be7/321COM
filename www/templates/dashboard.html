@@ -3,12 +3,12 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block head %}
-    {{ super() }}
-    <style>
-        #search-form label {
-            color: #FFFFFF;
-        }
-    </style>
+{{ super() }}
+<style>
+    #search-form label {
+        color: #FFFFFF;
+    }
+</style>
 {% endblock %}
 
 {% block nav %}
@@ -19,18 +19,18 @@
         <label for="category">Category</label>
         <select id="category" name="category" class="pure-input-1">
             {% for category in categories %}
-                <option value="{{ category.key.id() }}">{{ category.name }}</option>
+            <option value="{{ category.key.id() }}">{{ category.name }}</option>
             {% endfor %}
         </select>
 
         <label for="brand">Brand</label>
         <select id="brand" name="brand" class="pure-input-1">
             {% for brand in brands %}
-                <option value="{{ brand.key.id() }}">{{ brand.name }}</option>
+            <option value="{{ brand.key.id() }}">{{ brand.name }}</option>
             {% endfor %}
         </select>
 
-        <button type="submit" class="pure-button pure-button-primary">Search</button>
+        <button type="submit" class="pure-button pure-button-primary pure-input-1">Search</button>
     </fieldset>
 </form>
 {% endblock %}
@@ -47,27 +47,27 @@
 
 {% block content_body %}
 <table class="pure-table pure-table-horizontal pure-table-striped">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Order Name</th>
-        <th>Create By</th>
-        <th>Update Date</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Order Name</th>
+            <th>Create By</th>
+            <th>Update Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for order in orders %}
-            <tr>
-                <td>{{ order.key.id() }}</td>
-                <td>{{ order.name }}</td>
-                <td>{{ order.name }}</td>
-                <td>{{ order.update_at.strftime('%Y-%m-%d %H:%m') }}</td>
-                <td>{{ status[order.status] }}</td>
-                <td><a href="/order/{{ order.key.id() }}">Edit</a></td>
-            </tr>
+        <tr>
+            <td>{{ order.key.id() }}</td>
+            <td>{{ order.name }}</td>
+            <td>{{ order.user.name }}</td>
+            <td>{{ order.update_at.strftime('%Y-%m-%d %H:%m') }}</td>
+            <td>{{ status[order.status] }}</td>
+            <td><a href="/order/{{ order.key.id() }}">Edit</a></td>
+        </tr>
         {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 {% endblock %}
