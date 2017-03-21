@@ -1,6 +1,9 @@
 from google.appengine.ext import ndb
 
 from entities.Account import Account
+from entities.Brand import Brand
+from entities.Category import Category
+from entities.Product import Product
 
 
 class Order(ndb.Model):
@@ -19,10 +22,32 @@ class Order(ndb.Model):
     name_lower = ndb.ComputedProperty(lambda self: self.name.lower())
     description = ndb.TextProperty()
     user = ndb.StructuredProperty(Account, required=True)
-    product_ids = ndb.IntegerProperty(repeated=True)
+    products = ndb.StructuredProperty(Product, repeated=True)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_PENDING)
+
+    @classmethod
+    def get_my_order(cls):
+        return cls.query(cls.status.IN([1, 2, 5])).order(-cls.update_at).fetch()
+
+    @classmethod
+    def search(cls, name, category_id, brand_id):
+        orders = cls.query().fetch()
+        result = []
+        for order in orders:
+            if order.name in name:
+                result.append(order)
+            else:
+                for product in order.products:
+                    category = Category.get_by_id(category_id) if category_id else None
+                    brand = Brand.get_by_id(brand_id) if brand_id else None
+                    if (product.category == category or category is None) \
+                            and (product.brand == brand or brand is None) \
+                            and (product.name in name or not name)\
+                            and (order.name in name or not name):
+                        result.append(order)
+        return result
 
     @classmethod
     def sort_status(cls):

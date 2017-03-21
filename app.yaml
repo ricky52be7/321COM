@@ -30,6 +30,10 @@ handlers:
 - url: /(\d+)/orders
   script: main.app
 
+- url: /test
+  script: admin.test.app
+  login: admin
+
 libraries:
 - name: webapp2
   version: "latest"

@@ -32,7 +32,7 @@
 {% block nav %}
 <form class="pure-form pure-form-stacked" id="search-form">
     <fieldset>
-        <input class="pure-input-1 pure-input-rounded" id="search" type="text" placeholder="Search">
+        <input class="pure-input-1 pure-input-rounded" id="search" name="search" type="text" placeholder="Search">
 
         <label for="category">Category</label>
         <select id="category" name="category" class="pure-input-1">
@@ -58,9 +58,13 @@
     <p class="main-content-subtitle">Browse the latest offer!</p>
 </div>
 <div class="main-content-controls pure-u-1-2">
+    {% if users.get_current_user() %}
     <a class="secondary-button pure-button" href="/{{ users.get_current_user().user_id() }}/orders">My Trading</a>
     <a class="secondary-button pure-button" href="/order/add">Add My Products</a>
-    <a class="secondary-button pure-button" href="{{membership}}">Membership</a>
+    <a class="secondary-button pure-button" href="{{ auth_link }}">Logout</a>
+    {% else %}
+    <a class="secondary-button pure-button" href="{{ auth_link }}">Login</a>
+    {% endif %}
 </div>
 {% endblock %}
 

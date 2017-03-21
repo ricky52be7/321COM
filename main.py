@@ -58,7 +58,7 @@ class OrderRedirectHandler(webapp2.RequestHandler):
         user = users.get_current_user()
         order = Order(name="",
                       description="",
-                      product_ids=[],
+                      products=[],
                       user=Account.get_or_create(user.user_id(), user.nickname()))
         order.put()
         self.redirect("/order/"+str(order.key.id()))
@@ -71,7 +71,7 @@ class OrderAddHandler(webapp2.RequestHandler):
         template_var = {
             "isAdmin": users.is_current_user_admin(),
             "order": order,
-            "products": Product.get_order_products(order.product_ids),
+            "products": order.products,
             "status": Order.STATUS
         }
         self.response.write(template.render(template_var))
@@ -80,15 +80,18 @@ class OrderAddHandler(webapp2.RequestHandler):
         user = users.get_current_user()
         name = str(self.request.get("name"))
         desc = str(self.request.get("description", ""))
-        user = Account.get_or_create(user.user_id(), user.nickname())
+        account = Account.get_or_create(user.user_id(), user.nickname())
         order = Order.get_by_id(int(order_id))
         status = int(self.request.get("status", order.status))
         order.name = name
         order.description = desc
-        order.user = user
+        order.user = account
         order.status = status
         order.put()
-        self.redirect("/order/"+str(order.key.id()))
+        if users.is_current_user_admin():
+            self.redirect("/admin")
+        else:
+            self.redirect("/" + str(user.user_id()) + "/orders")
 
 
 class ProductAddHandler(webapp2.RequestHandler):
@@ -114,24 +117,28 @@ class ProductAddHandler(webapp2.RequestHandler):
         # img = self.request.get("photo", None)
         product = Product(name=name, description=desc, category=category, brand=brand)
         # product = Product(name=name, description=desc, category=category, brand=brand, img=img)
-        product.put()
+        # product.put()
         order = Order.get_by_id(int(order_id))
-        order.product_ids.append(product.key.id())
+        order.products.append(product)
         order.put()
-        if users.is_current_user_admin():
-            self.redirect("/admin")
-        else:
-            self.redirect("/order/" + str(order.key.id()))
+        self.redirect("/order/" + str(order.key.id()))
 
 
 class HomepageHandler(webapp2.RequestHandler):
     def get(self):
+        user = users.get_current_user()
+        if user:
+            Account.get_or_create(user.user_id(), user.nickname())
+            auth_link = users.create_logout_url(self.request.url)
+        else:
+            auth_link = users.create_login_url(self.request.url)
         template = JINJA_ENVIRONMENT.get_template('homepage.html')
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
             "orders": Order.query(Order.status == Order.STATUS_AVAILABLE).order(Order.create_at).fetch(),
             "users": users,
+            "auth_link": auth_link,
         }
         self.response.write(template.render(template_var))
 
@@ -153,7 +160,7 @@ class MyOrdersHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
-            "orders": Order.query(Order.status == Order.STATUS_AVAILABLE).order(Order.create_at).fetch(),
+            "orders": Order.get_my_order(),
             "users": users,
         }
         self.response.write(template.render(template_var))

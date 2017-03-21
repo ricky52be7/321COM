@@ -32,7 +32,7 @@
 {% block nav %}
 <form class="pure-form pure-form-stacked" id="search-form">
     <fieldset>
-        <input class="pure-input-1 pure-input-rounded" id="search" type="text" placeholder="Search">
+        <input class="pure-input-1 pure-input-rounded" id="search" name="search" type="text" placeholder="Search">
 
         <label for="category">Category</label>
         <select id="category" name="category" class="pure-input-1">
@@ -74,7 +74,7 @@
                      src="http://img15.deviantart.net/c983/i/2015/122/2/a/kongou_kancolle_by_merricx-d8rvorv.jpg">
                 <div class="order-cell-desc">
                     <p>{{order.name}}<br>
-                        {{order.name}}</p>
+                        {{order.description}}</p>
                 </div>
             </div>
         </a>
