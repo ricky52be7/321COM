@@ -166,10 +166,30 @@ class MyOrdersHandler(webapp2.RequestHandler):
         self.response.write(template.render(template_var))
 
 
+class OrderViewHandler(webapp2.RequestHandler):
+    def get(self, order_id):
+        template = JINJA_ENVIRONMENT.get_template('order_view.html')
+        order = Order.get_by_id(int(order_id))
+        template_var = {
+            "categories": Category.query().order(Category.name).fetch(),
+            "products": order.products,
+            "order": order,
+            "users": users,
+        }
+        self.response.write(template.render(template_var))
+
+
+class OfferAddHandler(webapp2.RequestHandler):
+    def get(self, order_id):
+        self.response.write(order_id)
+
+
 app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
     ('/order/add', OrderRedirectHandler),  # change to /order/(\d+)/add, new Order before change page
     ('/order/(\d+)', OrderAddHandler),
+    ('/order/(\d+)/view', OrderViewHandler),
     ('/order/(\d+)/product/add', ProductAddHandler),
     ('/(\d+)/orders', MyOrdersHandler),
+    ('/order/(\d+)/offer', OfferAddHandler),
 ], debug=True)
