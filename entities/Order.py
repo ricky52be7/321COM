@@ -42,8 +42,8 @@ class Order(ndb.Model):
                 for product in order.products:
                     category = Category.get_by_id(category_id) if category_id else None
                     brand = Brand.get_by_id(brand_id) if brand_id else None
-                    if (product.category == category or category is None) \
-                            and (product.brand == brand or brand is None) \
+                    if (product.category == category or category is None)\
+                            and (product.brand == brand or brand is None)\
                             and (product.name in name or not name)\
                             and (order.name in name or not name):
                         result.append(order)
