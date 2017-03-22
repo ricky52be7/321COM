@@ -186,13 +186,23 @@ class OfferAddHandler(webapp2.RequestHandler):
 
 
 class TradeAcceptHandler(webapp2.RequestHandler):
-    def post(self, order_id):
-        trade = Trade.get_by_id(int(order_id))
-        if onclick:
-            trade.status = Trade.STATUS_ACCEPT
-            #all other related offer linked with this order should change to Trade.STATUS_REJECT
-        if btnRej.onclick:
-            trade.status = Trade.STATUS_REJECT
+    def post(self, order_id, trade_id):
+        trade = Trade.get_by_id(int(trade_id))
+        trade_list = trade.query(Trade.order == order_id).fetch()
+        for t in trade_list:
+            if t.key.id() != trade.key.id():
+                t.status = Trade.STATUS_REJECT
+            else:
+                t.status = Trade.STATUS_ACCEPT
+                order = Order.get_by_id(order_id)
+                order.status = Order.STATUS_INVALID
+        trade.put()
+
+
+class TradeRejectHandler(webapp2.RequestHandler):
+    def post(self, trade_id):
+        trade = Trade.get_by_id(int(trade_id))
+        trade.status = Trade.STATUS_REJECT
         trade.put()
 
 
