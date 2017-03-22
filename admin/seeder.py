@@ -1,29 +1,10 @@
 import webapp2
 
+from entities.Account import Account
 from entities.Brand import Brand
 from entities.Category import Category
-
-"""
-    TYPES = ['Phone', 'Computer', 'Home Video Game Console', 'Audio', ]
-
-    PHONE_CATEGORIES = ['', 'Mobile Phone', 'SmartPhone', '123']
-
-     COMPUTER_CATEGORIES = ['', 'CPU', 'Power Supply Unit', 'Motherboard', 'Scanner/Printer', 'Mouse/Keyboard',
-                           'Hard Disk', 'Web Cam', 'Chassis', 'Display Card', 'Internal DVD Writer', 'RAM', 'RAID Card',
-                          'Sound Card']
-
-    HOME_GAME_CATEGORIES = ['']
-
-    AUDIO_CATEGORIES = ['']
-
-    COMPUTER_BRANDS = ['', 'AMD', 'INTEL', 'VIA', 'AMD', 'ASUS', 'AXLE', 'BioStar', 'Callbre', 'MSI', 'BenQ',
-                       'HP', 'LG', 'SamSung', 'DELL', 'Fujitsu', 'IBM', 'TOSHIBA', 'AsRock', ]
-
-    PHONE_BRANDS = ['Apple', 'Asus', 'HTC', 'Huawei', 'Lenovo', 'LG', 'Microsoft', 'Nokia', 'Samsung', 'Sony',
-                    'BlackBerry']
-
-    HOME_GAME_BRANDS = ['Sony', 'Microsoft', 'Nintendo']
-    """
+from entities.Order import Order
+from google.appengine.api import users
 
 
 class CategorySeederHandler(webapp2.RequestHandler):
@@ -42,11 +23,17 @@ class SeederHandler(webapp2.RequestHandler):
     def get(self):
         Category.seed()
         Brand.seed()
+        # user = users.get_current_user()
+        # account = Account(id=user.user_id(), name=user.nickname())
+        # Order.seed(account)
         self.response.write("finish")
 
 
 class OrderSeederHandler(webapp2.RequestHandler):
     def get(self):
+        user = users.get_current_user()
+        account = Account(id=user.user_id(), name=user.nickname())
+        Order.seed(account)
         self.response.write("finish")
 
 

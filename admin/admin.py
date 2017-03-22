@@ -25,7 +25,7 @@ class MainHandler(webapp2.RedirectHandler):
         template = JINJA_ENVIRONMENT.get_template('dashboard.html')
         template_var = {
             "logout": users.create_logout_url("/"),
-            "orders": Order.query().filter(Order.status != Order.STATUS_DELETED).fetch(),
+            "orders": Order.query().fetch(),
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
             "status": Order.STATUS

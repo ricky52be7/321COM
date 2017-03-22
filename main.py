@@ -79,7 +79,7 @@ class OrderAddHandler(webapp2.RequestHandler):
 
     def post(self, order_id):
         user = users.get_current_user()
-        name = str(self.request.get("name"))
+        name = str(self.request.get("name", ""))
         desc = str(self.request.get("description", ""))
         account = Account.get_or_create(user.user_id(), user.nickname())
         order = Order.get_by_id(int(order_id))
@@ -137,7 +137,7 @@ class HomepageHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
-            "orders": Order.query(Order.status == Order.STATUS_AVAILABLE).order(Order.create_at).fetch(),
+            "orders": Order.query(Order.status == Order.STATUS_VALID).order(Order.create_at).fetch(),
             "users": users,
             "auth_link": auth_link,
         }

@@ -6,7 +6,7 @@ from entities.Category import Category
 from entities.Product import Product
 
 
-class Order(ndb.model):
+class Order(ndb.Model):
     STATUS_VALID = 1
     STATUS_INVALID = 2
     STATUS = {STATUS_VALID: "valid",

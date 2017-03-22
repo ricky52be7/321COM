@@ -22,8 +22,8 @@ class Trade(ndb.Model):
     #           STATUS_DELETED: "deleted",
     #           STATUS_PENDING: "pending"}
 
-    order = ndb.StructuredProperty(Order, required=True)
-    offer = ndb.StructuredProperty(Offer, required=True)
+    order = ndb.IntegerProperty(required=True)
+    offer = ndb.IntegerProperty(required=True)
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_PENDING)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
