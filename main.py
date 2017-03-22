@@ -214,4 +214,6 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/product/add', ProductAddHandler),
     ('/(\d+)/orders', MyOrdersHandler),
     ('/order/(\d+)/offer', OfferAddHandler),
+    ('/trade/(\d+)/(\d+)/accept', TradeAcceptHandler),
+    ('/trade/(\d+)/(\d+)/reject', TradeRejectHandler),
 ], debug=True)
