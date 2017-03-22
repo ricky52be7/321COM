@@ -24,6 +24,7 @@ from entities.Brand import Brand
 from entities.Category import Category
 from entities.Order import Order
 from entities.Account import Account
+from entities.Trade import Trade
 from google.appengine.api import users
 from google.appengine.api import images
 from google.appengine.ext import ndb
@@ -182,6 +183,17 @@ class OrderViewHandler(webapp2.RequestHandler):
 class OfferAddHandler(webapp2.RequestHandler):
     def get(self, order_id):
         self.response.write(order_id)
+
+
+class TradeAcceptHandler(webapp2.RequestHandler):
+    def post(self, order_id):
+        trade = Trade.get_by_id(int(order_id))
+        if onclick:
+            trade.status = Trade.STATUS_ACCEPT
+            #all other related offer linked with this order should change to Trade.STATUS_REJECT
+        if btnRej.onclick:
+            trade.status = Trade.STATUS_REJECT
+        trade.put()
 
 
 app = webapp2.WSGIApplication([

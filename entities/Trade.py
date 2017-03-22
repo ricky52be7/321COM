@@ -1,9 +1,5 @@
 from google.appengine.ext import ndb
 
-from entities.Account import Account
-from entities.Brand import Brand
-from entities.Category import Category
-from entities.Product import Product
 from entities.Order import Order
 from entities.Offer import Offer
 
@@ -15,13 +11,27 @@ class Trade(ndb.Model):
     STATUS = {STATUS_ACCEPT: "accept",
               STATUS_REJECT: "reject",
               STATUS_PENDING: "pending"}
+    # STATUS_AVAILABLE = 1
+    # STATUS_SOLD = 2
+    # STATUS_HIDE = 3
+    # STATUS_DELETED = 4
+    # STATUS_PENDING = 5
+    # STATUS = {STATUS_AVAILABLE: "available",
+    #           STATUS_SOLD: "sold out",
+    #           STATUS_HIDE: "hide",
+    #           STATUS_DELETED: "deleted",
+    #           STATUS_PENDING: "pending"}
 
-    trade_id = ndb.StringProperty(required=True)
-    order = ndb.StructuredProperty(required=True)
-    offer = ndb.StructuredProperty(required=True)
-    products = ndb.StructuredProperty(Product, repeated=True)
+    order = ndb.StructuredProperty(Order, required=True)
+    offer = ndb.StructuredProperty(Offer, required=True)
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_PENDING)
+    create_at = ndb.DateTimeProperty(auto_now_add=True)
+    update_at = ndb.DateTimeProperty(auto_now=True)
 
     @classmethod
     def get_trade(cls):
-        return cls.query(cls.status.IN([1, 3])).trade(-cls.update_at).fetch()
+        return cls.query(cls.status == 3).order(-cls.update_at).fetch()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.order(-cls.update_at).fetch()

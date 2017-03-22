@@ -7,16 +7,6 @@ from entities.Product import Product
 
 
 class Offer(ndb.Model):
-    STATUS_AVAILABLE = 1
-    STATUS_SOLD = 2
-    STATUS_HIDE = 3
-    STATUS_DELETED = 4
-    STATUS_PENDING = 5
-    STATUS = {STATUS_AVAILABLE: "available",
-              STATUS_SOLD: "sold out",
-              STATUS_HIDE: "hide",
-              STATUS_DELETED: "deleted",
-              STATUS_PENDING: "pending"}
 
     name = ndb.StringProperty(required=True)
     name_lower = ndb.ComputedProperty(lambda self: self.name.lower())
@@ -25,11 +15,10 @@ class Offer(ndb.Model):
     products = ndb.StructuredProperty(Product, repeated=True)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
-    status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_PENDING)
 
-    @classmethod
-    def get_my_order(cls):
-        return cls.query(cls.status.IN([1, 2, 5])).order(-cls.update_at).fetch()
+   # @classmethod
+   # def get_my_order(cls):
+   #     return cls.query(cls.status == 1).order(-cls.update_at).fetch()
 
     @classmethod
     def search(cls, name, category_id, brand_id):
@@ -49,13 +38,13 @@ class Offer(ndb.Model):
                         result.append(order)
         return result
 
-    @classmethod
-    def sort_status(cls):
-        return cls.query(cls.status == 1).order(-cls.update_at)
+   # @classmethod
+   # def sort_status(cls):
+   #     return cls.query(cls.status == 1).order(-cls.update_at)
 
-    @classmethod
-    def search_name(cls, name_key):
-        return cls.query(cls.name == name_key, cls.status == 1).order(-cls.update_at)
+   # @classmethod
+   # def search_name(cls, name_key):
+   #     return cls.query(cls.name == name_key, cls.status == 1).order(-cls.update_at)
 
     @classmethod
     def search_name_lc(cls, name_key):
