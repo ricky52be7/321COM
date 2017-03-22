@@ -45,8 +45,14 @@ class SeederHandler(webapp2.RequestHandler):
         self.response.write("finish")
 
 
+class OrderSeederHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write("finish")
+
+
 app = webapp2.WSGIApplication([
     ('/seeding/category', CategorySeederHandler),
     ('/seeding/brand', BrandSeederHandler),
+    ('/seeding/order', OrderSeederHandler),
     ('/seeding/all', SeederHandler),
 ], debug=True)

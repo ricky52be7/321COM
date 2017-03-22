@@ -4,7 +4,6 @@ from entities.Account import Account
 from entities.Brand import Brand
 from entities.Category import Category
 from entities.Product import Product
-from entities.Order import Order
 
 
 class Offer(ndb.Model):
@@ -62,4 +61,4 @@ class Offer(ndb.Model):
     def search_name_lc(cls, name_key):
         name_key = name_key.lower()
         limit = name_key[:-1] + chr(ord(name_key[-1]) + 1)
-        return cls.query(Order.name_lower >= name_key, Order.name_lower < limit).fetch(50)
+        return cls.query(Offer.name_lower >= name_key, Offer.name_lower < limit).fetch(50)

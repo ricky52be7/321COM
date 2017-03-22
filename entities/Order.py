@@ -10,7 +10,3 @@ class Order(Offer):
     Offer.STATUS['STATUS_REJECTED'] = "rejected"
 
     olist = ndb.StructuredProperty(Offer, required=True)
-
-    @classmethod
-    def post_reply(cls):
-        if()
