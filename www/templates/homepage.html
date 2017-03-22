@@ -75,13 +75,13 @@
 <div class="pure-g">
     {% for order in orders %}
     <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
-        <a href="/order/{{ order.key.id() }}">
+        <a href="/order/{{ order.key.id() }}/view">
             <div class="order-cell">
                 <img class="pure-img"
                      src="http://img15.deviantart.net/c983/i/2015/122/2/a/kongou_kancolle_by_merricx-d8rvorv.jpg">
                 <div class="order-cell-desc">
                     <p>{{order.name}}<br>
-                        {{order.name}}</p>
+                        {{order.description}}</p>
                 </div>
             </div>
         </a>

@@ -171,12 +171,15 @@ class OrderViewHandler(webapp2.RequestHandler):
     def get(self, order_id):
         template = JINJA_ENVIRONMENT.get_template('order_view.html')
         order = Order.get_by_id(int(order_id))
+        logging.info(order.user.id)
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "products": order.products,
             "order": order,
             "users": users,
+            "trades": Trade.query(Trade.order == order.key.id())
         }
+
         self.response.write(template.render(template_var))
 
 
