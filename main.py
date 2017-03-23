@@ -22,6 +22,7 @@ import logging
 
 from entities.Brand import Brand
 from entities.Category import Category
+from entities.Offer import Offer
 from entities.Order import Order
 from entities.Account import Account
 from entities.Trade import Trade
@@ -171,24 +172,73 @@ class OrderViewHandler(webapp2.RequestHandler):
     def get(self, order_id):
         template = JINJA_ENVIRONMENT.get_template('order_view.html')
         order = Order.get_by_id(int(order_id))
-        logging.info(order.user.id)
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "products": order.products,
             "order": order,
             "users": users,
-            "trades": Trade.query(Trade.order == order.key.id())
+            "offers": Trade.get_trade_offer(order.key.id())
         }
-
         self.response.write(template.render(template_var))
 
 
-class OfferAddHandler(webapp2.RequestHandler):
+class OfferRedirectHandler(webapp2.RequestHandler):
     def get(self, order_id):
-        self.response.write(order_id)
+        user = users.get_current_user()
+        offer = Offer(name="",
+                      description="",
+                      products=[],
+                      user=Account.get_or_create(user.user_id(), user.nickname()))
+        offer.put()
+        self.redirect("/order/"+order_id+"/offer/"+str(offer.key.id()))
+
+
+class OfferAddHandler(webapp2.RequestHandler):
+    def get(self, order_id, offer_id):
+        template = JINJA_ENVIRONMENT.get_template('offer_add.html')
+        offer = Offer.get_by_id(int(offer_id))
+        template_var = {
+            "products": offer.products,
+            "offer": offer,
+            "order_id": order_id,
+        }
+        self.response.write(template.render(template_var))
+
+    def post(self, order_id, offer_id):
+        trade = Trade(order=int(order_id), offer=int(offer_id))
+        trade.put()
+        self.redirect("/order/"+order_id+"/view")
+
+
+class AddOfferProductHandler(webapp2.RequestHandler):
+    def get(self, order_id, offer_id):
+        template = JINJA_ENVIRONMENT.get_template('product_add.html')
+        template_var = {
+            "categories": Category.query().order(Category.name).fetch(),
+            "brands": Brand.query().order(Brand.name).fetch(),
+        }
+        self.response.write(template.render(template_var))
+
+    def post(self, order_id, offer_id):
+        name = self.request.get("name")
+        desc = self.request.get("description")
+        category = Category.get_by_id(int(self.request.get("category")))
+        # status = self.request.get("status")
+        brand = Brand.get_by_id(int(self.request.get("brand")))
+        # img = self.request.get("photo", None)
+        product = Product(name=name, description=desc, category=category, brand=brand)
+        # product = Product(name=name, description=desc, category=category, brand=brand, img=img)
+        # product.put()
+        offer = Offer.get_by_id(int(offer_id))
+        offer.products.append(product)
+        offer.put()
+        self.redirect("/order/" + order_id + "/offer/" + str(offer.key.id()))
 
 
 class TradeAcceptHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write()
+
     def post(self, order_id, trade_id):
         trade = Trade.get_by_id(int(trade_id))
         trade_list = trade.query(Trade.order == order_id).fetch()
@@ -200,13 +250,18 @@ class TradeAcceptHandler(webapp2.RequestHandler):
                 order = Order.get_by_id(order_id)
                 order.status = Order.STATUS_INVALID
         trade.put()
+        self.response.write()
 
 
 class TradeRejectHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.write()
+
     def post(self, trade_id):
         trade = Trade.get_by_id(int(trade_id))
         trade.status = Trade.STATUS_REJECT
         trade.put()
+        self.response.write()
 
 
 app = webapp2.WSGIApplication([
@@ -216,7 +271,9 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/view', OrderViewHandler),
     ('/order/(\d+)/product/add', ProductAddHandler),
     ('/(\d+)/orders', MyOrdersHandler),
-    ('/order/(\d+)/offer', OfferAddHandler),
-    ('/trade/(\d+)/(\d+)/accept', TradeAcceptHandler),
-    ('/trade/(\d+)/(\d+)/reject', TradeRejectHandler),
+    ('/order/(\d+)/offer/add', OfferRedirectHandler),
+    ('/order/(\d+)/offer/(\d+)', OfferAddHandler),
+    ('/order/(\d+)/offer/(\d+)/product/add', AddOfferProductHandler),
+    ('/trade/(\d+)/offer/(\d+)/accept', TradeAcceptHandler),
+    ('/trade/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
 ], debug=True)

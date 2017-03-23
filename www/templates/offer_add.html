@@ -26,19 +26,19 @@
     <fieldset>
         <div class="pure-control-group">
             <label for="name">Order Name</label>
-            <input id="name" name="name" type="text" value="{{ order.name }}" placeholder="Order Name" required>
+            <input id="name" name="name" type="text" value="{{ offer.name }}" placeholder="Order Name" required>
         </div>
 
         <div class="pure-control-group">
             <label for="description">Description</label>
-            <input id="description" name="description" type="text" value="{{ order.description }}"
+            <input id="description" name="description" type="text" value="{{ offer.description }}"
                    placeholder="Description">
         </div>
 
         <div class="pure-control-group">
             <label for="products">Products</label>
             <a id="products" class="pure-button pure-button-primary"
-               href="/order/{{ order.key.id() }}/product/add">Add</a>
+               href="/order/{{ order_id }}/offer/{{ offer.key.id() }}/product/add">Add</a>
         </div>
 
         {% if products|length > 0 %}
@@ -62,7 +62,7 @@
             <label for="status">Status</label>
             <select id="status" name="status">
                 {% for i in range(status|length) %}
-                <option value="{{ status.keys()[i] }}" {% if status.keys()[i]== order.status %} selected="selected" {%
+                <option value="{{ status.keys()[i] }}" {% if status.keys()[i]== offer.status %} selected="selected" {%
                         endif %}>
                     {{ status[i+1] }}
                 </option>

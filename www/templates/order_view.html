@@ -41,9 +41,6 @@
 {% endblock %}
 
 {% block content_body %}
-<table>
-
-</table>
 <form class="pure-form pure-form-aligned">
     <fieldset>
         <div class="pure-control-group">
@@ -79,46 +76,30 @@
 </form>
 
 {% if users.get_current_user() %}
-{% if ((users.get_current_user().user_id() == order.user.id) and (trades|length > 0))  %}
-{% for trade in trades %}
-<form class="pure-form pure-form-aligned" method="post">
-    <fieldset>
-        <div class="pure-control-group">
-            <label for="name">Offer Name</label>
-            {{ .name }}
-        </div>
-
-        <div class="pure-control-group">
-            <label for="description">Description</label>
-            {{ offer.description }}
-        </div>
-
-        <div class="pure-control-group">
-            <label for="products">Products</label>
-        </div>
-        {% if products|length > 0 %}
-        <div class="pure-controls pure-g">
-            {% for product in products %}
-            <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
-                <div class="order-cell">
-                    <img class="pure-img"
-                         src="http://img15.deviantart.net/c983/i/2015/122/2/a/kongou_kancolle_by_merricx-d8rvorv.jpg">
-                    <div class="order-cell-desc">
-                        <p>{{ product.name }}<br>
-                            {{ product.description }}</p>
-                    </div>
+{% if ((users.get_current_user().user_id() == order.user.id) and (offers|length > 0))  %}
+<div class="pure-g">
+    {% for offer in offers %}
+    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+        <form class="pure-form pure-form-aligned" method="post">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="name">Offer Name</label>
+                    {{ offer.name }}
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </fieldset>
-</form>
-{% endfor %}
+
+                <div class="pure-control-group">
+                    <label for="description">Description</label>
+                    {{ offer.description }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    {% endfor %}
+</div>
 {% endif %}
 {% endif %}
 
 <div class="pure-u-1" style="text-align: center">
-    <a class="pure-button" href="offer">Trade Request</a>
+    <a class="pure-button" href="/order/{{ order.key.id() }}/offer/add">Trade Request</a>
 </div>
 {% endblock %}

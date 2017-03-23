@@ -35,3 +35,11 @@ class Trade(ndb.Model):
     @classmethod
     def get_all(cls):
         return cls.query.order(-cls.update_at).fetch()
+
+    @classmethod
+    def get_trade_offer(cls, order_id):
+        trades = cls.query(cls.order == order_id).fetch()
+        offers = []
+        for trade in trades:
+            offers.append(Offer.get_by_id(trade.offer))
+        return offers
