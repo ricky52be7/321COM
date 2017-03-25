@@ -295,5 +295,5 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/product/add', AddOfferProductHandler),
     ('/trade/(\d+)/offer/(\d+)/accept', TradeAcceptHandler),
     ('/trade/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
-    ('/order/(\d+)/comment/add',AddCommentHandler)
+    ('/order/(\d+)/comment/add', AddCommentHandler)
 ], debug=True)
