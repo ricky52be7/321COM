@@ -72,6 +72,12 @@
     </fieldset>
 </form>
 
+<form class="pure-form pure-form-aligned" style="text-align:center">
+    <textarea name="comment" cols="40" rows="4">
+Please add your comment here!
+    </textarea>
+    <button type="submit" class="pure-button pure-button-primary">Submit</button>
+</form>
 
 
 {% if users.get_current_user() %}
@@ -99,7 +105,6 @@
 {% endif %}
 
 <div class="pure-u-1" style="text-align: center">
-    <button type="submit" class="pure-button">Add Comment</button>
     <a class="pure-button" href="/order/{{ order.key.id() }}/offer/add">Trade Request</a>
 </div>
 {% endblock %}

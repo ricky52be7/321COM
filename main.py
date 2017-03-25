@@ -263,6 +263,25 @@ class TradeRejectHandler(webapp2.RequestHandler):
         trade.put()
         self.response.write()
 
+class AddCommentHandler(webapp2.RequestHandler):
+    def get(self, order_id):
+        order = Order.get_by_id(int(order_id))
+        template = JINJA_ENVIRONMENT.get_template('order_view.html')
+        template_var = {
+            "order": order,
+            "products": order.products,
+        }
+        self.response.write(template.render(template_var))
+
+    def post(self, order_id):
+        comment = str(self.request.get("comment",""))
+        order.comment = comment
+        order.put()
+        if users.is_current_user_admin():
+            self.redirect("/admin")
+        else:
+            self.redirect("/" + str(user.user_id()) + "/orders")
+
 
 app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
@@ -276,4 +295,5 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/product/add', AddOfferProductHandler),
     ('/trade/(\d+)/offer/(\d+)/accept', TradeAcceptHandler),
     ('/trade/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
+    ('/order/(\d+)/comment/add',AddCommentHandler)
 ], debug=True)
