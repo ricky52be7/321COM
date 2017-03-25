@@ -11,6 +11,7 @@ class Offer(ndb.Model):
     name = ndb.StringProperty(required=True)
     name_lower = ndb.ComputedProperty(lambda self: self.name.lower())
     description = ndb.TextProperty()
+    comment = ndb.TextProperty()
     user = ndb.StructuredProperty(Account, required=True)
     products = ndb.StructuredProperty(Product, repeated=True)
     create_at = ndb.DateTimeProperty(auto_now_add=True)

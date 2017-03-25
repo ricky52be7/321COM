@@ -53,9 +53,6 @@
             {{ order.description }}
         </div>
 
-        <div class="pure-control-group">
-            <label for="products">Products</label>
-        </div>
         {% if products|length > 0 %}
         <div class="pure-controls pure-g">
             {% for product in products %}
@@ -73,7 +70,13 @@
         </div>
         {% endif %}
     </fieldset>
+        <div class="pure-control-group">
+            <label for="comment">Comment</label>
+             <input id="comment" name="comment" type="text" value="{{ order.comment }}" placeholder="Comment" required>
+        </div>
 </form>
+
+
 
 {% if users.get_current_user() %}
 {% if ((users.get_current_user().user_id() == order.user.id) and (offers|length > 0))  %}
@@ -98,6 +101,9 @@
 </div>
 {% endif %}
 {% endif %}
+<div class="pure-u-1" style="...">
+    <a class="pure-button" href=""
+</div>
 
 <div class="pure-u-1" style="text-align: center">
     <a class="pure-button" href="/order/{{ order.key.id() }}/offer/add">Trade Request</a>
