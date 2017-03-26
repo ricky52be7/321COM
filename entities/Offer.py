@@ -7,19 +7,19 @@ from entities.Product import Product
 
 
 class Offer(ndb.Model):
-
     name = ndb.StringProperty(required=True)
     name_lower = ndb.ComputedProperty(lambda self: self.name.lower())
     description = ndb.TextProperty()
-    comment = ndb.TextProperty()
     user = ndb.StructuredProperty(Account, required=True)
     products = ndb.StructuredProperty(Product, repeated=True)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
 
-   # @classmethod
-   # def get_my_order(cls):
-   #     return cls.query(cls.status == 1).order(-cls.update_at).fetch()
+    """
+    @classmethod
+        def get_my_order(cls):
+        return cls.query(cls.status == 1).order(-cls.update_at).fetch()
+    """
 
     @classmethod
     def search(cls, name, category_id, brand_id):
@@ -32,20 +32,20 @@ class Offer(ndb.Model):
                 for product in order.products:
                     category = Category.get_by_id(category_id) if category_id else None
                     brand = Brand.get_by_id(brand_id) if brand_id else None
-                    if (product.category == category or category is None)\
-                            and (product.brand == brand or brand is None)\
-                            and (product.name in name or not name)\
+                    if (product.category == category or category is None) \
+                            and (product.brand == brand or brand is None) \
+                            and (product.name in name or not name) \
                             and (order.name in name or not name):
                         result.append(order)
         return result
 
-   # @classmethod
-   # def sort_status(cls):
-   #     return cls.query(cls.status == 1).order(-cls.update_at)
+        # @classmethod
+        # def sort_status(cls):
+        #     return cls.query(cls.status == 1).order(-cls.update_at)
 
-   # @classmethod
-   # def search_name(cls, name_key):
-   #     return cls.query(cls.name == name_key, cls.status == 1).order(-cls.update_at)
+        # @classmethod
+        # def search_name(cls, name_key):
+        #     return cls.query(cls.name == name_key, cls.status == 1).order(-cls.update_at)
 
     @classmethod
     def search_name_lc(cls, name_key):

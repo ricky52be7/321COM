@@ -22,6 +22,7 @@ import logging
 
 from entities.Brand import Brand
 from entities.Category import Category
+from entities.Comment import Comment
 from entities.Offer import Offer
 from entities.Order import Order
 from entities.Account import Account
@@ -61,7 +62,9 @@ class OrderRedirectHandler(webapp2.RequestHandler):
         order = Order(name="",
                       description="",
                       products=[],
-                      user=Account.get_or_create(user.user_id(), user.nickname()))
+                      comments=[],
+                      user=Account.get_or_create(user.user_id(), user.nickname()),
+                      status=Order.STATUS_INVALID)
         order.put()
         self.redirect("/order/"+str(order.key.id()))
 
@@ -84,7 +87,7 @@ class OrderAddHandler(webapp2.RequestHandler):
         desc = str(self.request.get("description", ""))
         account = Account.get_or_create(user.user_id(), user.nickname())
         order = Order.get_by_id(int(order_id))
-        status = int(self.request.get("status", order.status))
+        status = int(self.request.get("status", Order.STATUS_VALID))
         order.name = name
         order.description = desc
         order.user = account
@@ -171,13 +174,21 @@ class MyOrdersHandler(webapp2.RequestHandler):
 class OrderViewHandler(webapp2.RequestHandler):
     def get(self, order_id):
         template = JINJA_ENVIRONMENT.get_template('order_view.html')
+        user = users.get_current_user()
+        if user:
+            Account.get_or_create(user.user_id(), user.nickname())
+            auth_link = users.create_logout_url(self.request.url)
+        else:
+            auth_link = users.create_login_url(self.request.url)
         order = Order.get_by_id(int(order_id))
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "products": order.products,
             "order": order,
             "users": users,
-            "offers": Trade.get_trade_offer(order.key.id())
+            "offers": Trade.get_trade_offer(order.key.id()),
+            "comments": order.comments,
+            "auth_link": auth_link
         }
         self.response.write(template.render(template_var))
 
@@ -193,6 +204,27 @@ class OfferRedirectHandler(webapp2.RequestHandler):
         self.redirect("/order/"+order_id+"/offer/"+str(offer.key.id()))
 
 
+class OfferViewHandler(webapp2.RequestHandler):
+    def get(self, order_id, offer_id):
+        template = JINJA_ENVIRONMENT.get_template('offer_view.html')
+        user = users.get_current_user()
+        if user:
+            Account.get_or_create(user.user_id(), user.nickname())
+            auth_link = users.create_logout_url(self.request.url)
+        else:
+            auth_link = users.create_login_url(self.request.url)
+        offer = Offer.get_by_id(int(offer_id))
+        template_var = {
+            "categories": Category.query().order(Category.name).fetch(),
+            "offer": offer,
+            "products": offer.products,
+            "users": users,
+            "auth_link": auth_link,
+            "order_id": order_id,
+        }
+        self.response.write(template.render(template_var))
+
+
 class OfferAddHandler(webapp2.RequestHandler):
     def get(self, order_id, offer_id):
         template = JINJA_ENVIRONMENT.get_template('offer_add.html')
@@ -205,6 +237,12 @@ class OfferAddHandler(webapp2.RequestHandler):
         self.response.write(template.render(template_var))
 
     def post(self, order_id, offer_id):
+        name = self.request.get("name")
+        desc = self.request.get("description")
+        offer = Offer.get_by_id(int(offer_id))
+        offer.name = name
+        offer.description = desc
+        offer.put()
         trade = Trade(order=int(order_id), offer=int(offer_id))
         trade.put()
         self.redirect("/order/"+order_id+"/view")
@@ -236,55 +274,48 @@ class AddOfferProductHandler(webapp2.RequestHandler):
 
 
 class TradeAcceptHandler(webapp2.RequestHandler):
-    def get(self):
+    def get(self, order_id, offer_id):
         self.response.write()
 
-    def post(self, order_id, trade_id):
-        trade = Trade.get_by_id(int(trade_id))
-        trade_list = trade.query(Trade.order == order_id).fetch()
+    def post(self, order_id, offer_id):
+        trade_list = Trade.query(Trade.order == int(order_id)).fetch()
         for t in trade_list:
-            if t.key.id() != trade.key.id():
-                t.status = Trade.STATUS_REJECT
-            else:
+            if t.offer == int(offer_id):
                 t.status = Trade.STATUS_ACCEPT
-                order = Order.get_by_id(order_id)
+                order = Order.get_by_id(int(order_id))
                 order.status = Order.STATUS_INVALID
-        trade.put()
-        self.response.write()
+                order.put()
+            else:
+                t.status = Trade.STATUS_REJECT
+            t.put()
+        self.redirect("/")
 
 
 class TradeRejectHandler(webapp2.RequestHandler):
-    def get(self):
+    def get(self, order_id, offer_id):
         self.response.write()
 
-    def post(self, trade_id):
-        trade = Trade.get_by_id(int(trade_id))
+    def post(self, order_id, offer_id):
+        trade = Trade.query(Trade.order == int(order_id), Trade.offer == int(offer_id)).get()
         trade.status = Trade.STATUS_REJECT
         trade.put()
-        self.response.write()
+        self.redirect("/order/" + order_id + "/view")
+
 
 class AddCommentHandler(webapp2.RequestHandler):
     def get(self, order_id):
+        self.response.write()
+
+    def post(self, order_id):
+        user = users.get_current_user()
+        account = Account.get_or_create(user.user_id(), user.nickname())
+        cm = self.request.get("comment", "")
+        comment = Comment(user=account, comment=cm)
         order = Order.get_by_id(int(order_id))
-        template = JINJA_ENVIRONMENT.get_template('order_view.html')
-        template_var = {
-            "order": order,
-            "products": order.products,
-        }
-        self.response.write(template.render(template_var))
-
-    def post(self, order_id):
-        comment = str(self.request.get("comment",""))
-        order.comment = comment
+        order.comments.append(comment)
         order.put()
-        if users.is_current_user_admin():
-            self.redirect("/admin")
-        else:
-            self.redirect("/" + str(user.user_id()) + "/orders")
+        self.redirect("/order/" + order_id + "/view")
 
-
-class LeaveCommentHandler(webapp2.RequestHandler):
-    def post(self, order_id):
 
 app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
@@ -296,7 +327,8 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/add', OfferRedirectHandler),
     ('/order/(\d+)/offer/(\d+)', OfferAddHandler),
     ('/order/(\d+)/offer/(\d+)/product/add', AddOfferProductHandler),
-    ('/trade/(\d+)/offer/(\d+)/accept', TradeAcceptHandler),
-    ('/trade/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
-    ('/order/(\d+)/comment/add', AddCommentHandler)
+    ('/order/(\d+)/offer/(\d+)/accept', TradeAcceptHandler),
+    ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
+    ('/order/(\d+)/comment/add', AddCommentHandler),
+    ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
 ], debug=True)

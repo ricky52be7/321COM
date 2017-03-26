@@ -3,6 +3,7 @@ from google.appengine.ext import ndb
 from entities.Account import Account
 from entities.Brand import Brand
 from entities.Category import Category
+from entities.Comment import Comment
 from entities.Product import Product
 
 
@@ -17,10 +18,10 @@ class Order(ndb.Model):
     description = ndb.TextProperty()
     user = ndb.StructuredProperty(Account, required=True)
     products = ndb.StructuredProperty(Product, repeated=True)
+    comments = ndb.StructuredProperty(Comment, repeated=True)
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_VALID)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
-    cm = ndb.TextProperty()
 
     @classmethod
     def get_my_order(cls):

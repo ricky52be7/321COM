@@ -59,13 +59,13 @@
 <form class="pure-form pure-form-aligned">
     <fieldset>
         <div class="pure-control-group">
-            <label for="name">Order Name</label>
-            {{ order.name }}
+            <label for="name">Offer Name</label>
+            {{ offer.name }}
         </div>
 
         <div class="pure-control-group">
             <label for="description">Description</label>
-            {{ order.description }}
+            {{ offer.description }}
         </div>
 
         {% if products|length > 0 %}
@@ -88,67 +88,16 @@
 </form>
 
 {% if users.get_current_user() %}
-{% if ((users.get_current_user().user_id() == order.user.id) and (offers|length > 0))  %}
-<div class="pure-g">
-    {% for offer in offers %}
-    <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
-        <form class="pure-form pure-form-aligned offer-cell" method="post">
-            <fieldset>
-                <div class="pure-control-group">
-                    <label for="name">Offer Name</label>
-                    {{ offer.name }}
-                </div>
-
-                <div class="pure-control-group">
-                    <label for="description">Description</label>
-                    {{ offer.description }}
-                </div>
-                <div class="pure-controls">
-                    <a class="pure-button" href="/order/{{ order.key.id() }}/offer/{{ offer.key.id() }}/view">Details</a>
-                </div>
-            </fieldset>
-        </form>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-{% endif %}
-
-{% if users.get_current_user() %}
 {#% if users.get_current_user().user_id() != order.user.id %#}
-<div class="pure-u-1" style="text-align: center">
-    <a class="pure-button" href="/order/{{ order.key.id() }}/offer/add">Trade Request</a>
+<div class="pure-g">
+    <form class="pure-u-1-2" style="text-align: right" method="post" action="/order/{{ order_id }}/offer/{{offer.key.id()}}/accept">
+        <button class="pure-button" type="submit">Accept</button>
+    </form>
+    <form class="pure-u-1-2" action="/order/{{ order_id }}/offer/{{offer.key.id()}}/reject" method="post">
+        <button class="pure-button" type="submit">Reject</button>
+    </form>
 </div>
+
 {#% endif %#}
 {% endif %}
-Comments
-<hr>
-{% if comments|length > 0 %}
-    {% for comment in comments %}
-        <form class="pure-form pure-form-aligned">
-            <div class="pure-control-group">
-                <label>user:</label>
-                {{ comment.user.name }}
-            </div>
-            <div class="pure-control-group">
-                <label>comment:</label>
-                {{ comment.comment }}
-            </div>
-        </form>
-        <hr>
-    {% endfor %}
-{% endif %}
-<form class="pure-form pure-form-aligned" method="post" action="/order/{{ order.key.id() }}/comment/add">
-    <fieldset>
-        <div class="pure-control-group">
-            <label for="comment"></label>
-            <textarea name="comment" id="comment" class="pure-u-1 pure-u-md-1-2"
-            placeholder="Please add your comment here!"></textarea>
-        </div>
-        <div class="pure-controls">
-            <button type="submit" class="pure-button pure-button-primary">Submit</button>
-        </div>
-    </fieldset>
-</form>
-
 {% endblock %}

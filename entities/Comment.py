@@ -1,15 +1,13 @@
 from google.appengine.ext import ndb
 
-from entities.Order import Order
 from entities.Account import Account
 
 
-class Comment(ndb.model):
-    cmid = ndb.IntegerProperty(required=True)
-    orderid = ndb.IntegerProperty(Order.get_by_id, required=True)
+class Comment(ndb.Model):
+    # cmid = ndb.IntegerProperty(required=True) # use ndb id instead of custom id
+    # order_id = ndb.IntegerProperty(required=True)  # use structuredProperty in Order rather than build relation
     user = ndb.StructuredProperty(Account, required=True)
-    title = ndb.StringProperty(required=True)
-    description = ndb.TextProperty()
+    comment = ndb.TextProperty(required=True)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
 

@@ -38,7 +38,7 @@ class Trade(ndb.Model):
 
     @classmethod
     def get_trade_offer(cls, order_id):
-        trades = cls.query(cls.order == order_id).fetch()
+        trades = cls.query(cls.order == order_id, cls.status == 3).fetch()
         offers = []
         for trade in trades:
             offers.append(Offer.get_by_id(trade.offer))
