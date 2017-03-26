@@ -283,6 +283,9 @@ class AddCommentHandler(webapp2.RequestHandler):
             self.redirect("/" + str(user.user_id()) + "/orders")
 
 
+class LeaveCommentHandler(webapp2.RequestHandler):
+    def post(self, order_id):
+
 app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
     ('/order/add', OrderRedirectHandler),  # change to /order/(\d+)/add, new Order before change page

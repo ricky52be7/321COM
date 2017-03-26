@@ -20,6 +20,7 @@ class Order(ndb.Model):
     status = ndb.IntegerProperty(choices=STATUS.keys(), default=STATUS_VALID)
     create_at = ndb.DateTimeProperty(auto_now_add=True)
     update_at = ndb.DateTimeProperty(auto_now=True)
+    cm = ndb.TextProperty()
 
     @classmethod
     def get_my_order(cls):
