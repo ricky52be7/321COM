@@ -317,6 +317,22 @@ class AddCommentHandler(webapp2.RequestHandler):
         self.redirect("/order/" + order_id + "/view")
 
 
+class SearchOrderHandler(webapp2.RequestHandler):
+    def get(self):
+        str = self.request.get('search')
+        self.response.write(self,str)
+        #template = JINJA_ENVIRONMENT.get_template('homepage.html')
+        #template_var = {
+        #    "categories": Category.query().order(Category.name).fetch(),
+        #    "brands": Brand.query().order(Brand.name).fetch(),
+        #    "orders": Order.search_name_lc(str),
+        #    "users": users
+        #}
+        #self.response.write(template.render(template_var))
+        #self.redirect("/order/" + str + "/view")
+        #self.redirect("/order/search/" + str)
+
+
 app = webapp2.WSGIApplication([
     ('/', HomepageHandler),
     ('/order/add', OrderRedirectHandler),  # change to /order/(\d+)/add, new Order before change page
@@ -331,4 +347,5 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
     ('/order/(\d+)/comment/add', AddCommentHandler),
     ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
+    ('/order/search/(\d+)', SearchOrderHandler)
 ], debug=True)

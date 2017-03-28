@@ -30,9 +30,9 @@
 {% endblock %}
 
 {% block nav %}
-<form class="pure-form pure-form-stacked" id="search-form">
+<form class="pure-form pure-form-stacked" id="search-form" method="get">
     <fieldset>
-        <input class="pure-input-1 pure-input-rounded" id="search" name="search" type="text" placeholder="Search">
+        <input class="pure-input-1 pure-input-rounded" id="search" name="search" type="text" placeholder="Search" value=""/>
 
         <label for="category">Category</label>
         <select id="category" name="category" class="pure-input-1">
