@@ -129,6 +129,13 @@ class ProductAddHandler(webapp2.RequestHandler):
         self.redirect("/order/" + str(order.key.id()))
 
 
+class SearchOrderHandler(webapp2.RequestHandler):
+    def get(self):
+        str = self.request.get('search')
+        self.response.write(self,str)
+        HomepageHandler()
+
+
 class HomepageHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -137,11 +144,16 @@ class HomepageHandler(webapp2.RequestHandler):
             auth_link = users.create_logout_url(self.request.url)
         else:
             auth_link = users.create_login_url(self.request.url)
+        if (self.request.get('search') == ""):
+            ordervar = Order.query(Order.status == Order.STATUS_VALID).order(Order.create_at).fetch()
+        else:
+            str = self.request.get('search')
+            ordervar = Order.search_name_lc(str)
         template = JINJA_ENVIRONMENT.get_template('homepage.html')
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
-            "orders": Order.query(Order.status == Order.STATUS_VALID).order(Order.create_at).fetch(),
+            "orders": ordervar,
             "users": users,
             "auth_link": auth_link,
         }
@@ -321,16 +333,7 @@ class SearchOrderHandler(webapp2.RequestHandler):
     def get(self):
         str = self.request.get('search')
         self.response.write(self,str)
-        #template = JINJA_ENVIRONMENT.get_template('homepage.html')
-        #template_var = {
-        #    "categories": Category.query().order(Category.name).fetch(),
-        #    "brands": Brand.query().order(Brand.name).fetch(),
-        #    "orders": Order.search_name_lc(str),
-        #    "users": users
-        #}
-        #self.response.write(template.render(template_var))
-        #self.redirect("/order/" + str + "/view")
-        #self.redirect("/order/search/" + str)
+        HomepageHandler()
 
 
 app = webapp2.WSGIApplication([
@@ -346,6 +349,5 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/accept', TradeAcceptHandler),
     ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
     ('/order/(\d+)/comment/add', AddCommentHandler),
-    ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
-    ('/order/search/(\d+)', SearchOrderHandler)
+    ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler)
 ], debug=True)
