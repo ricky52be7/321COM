@@ -47,7 +47,7 @@ class Order(ndb.Model):
 
     @classmethod
     def sort_status(cls):
-        return cls.query(cls.status == 1).order(-cls.update_at)
+        return cls.query(cls.status == 0).order(-cls.update_at)
 
     @classmethod
     def search_name(cls, name_key):

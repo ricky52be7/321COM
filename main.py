@@ -19,6 +19,8 @@ import os
 import webapp2
 import jinja2
 import logging
+import cgi
+import urllib
 
 from entities.Brand import Brand
 from entities.Category import Category
@@ -30,6 +32,7 @@ from entities.Trade import Trade
 from google.appengine.api import users, mail
 from google.appengine.api import images
 from google.appengine.ext import ndb
+
 
 from entities.Product import Product
 
@@ -105,7 +108,7 @@ class ProductAddHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
-            # "img": Product.query().order(Product.img).fetch()
+            #"img": Product.query().order(Product.img).fetch()
             # self.response.out.write('<div><img src="/img?img_id=%s"></img>' %
             #                         greeting.key.urlsafe())
             # self.response.out.write('<blockquote>%s</blockquote></div>' %
@@ -119,10 +122,10 @@ class ProductAddHandler(webapp2.RequestHandler):
         category = Category.get_by_id(int(self.request.get("category")))
         # status = self.request.get("status")
         brand = Brand.get_by_id(int(self.request.get("brand")))
-        # img = self.request.get("photo", None)
-        product = Product(name=name, description=desc, category=category, brand=brand)
-        # product = Product(name=name, description=desc, category=category, brand=brand, img=img)
-        # product.put()
+        img = self.request.get("img", None)
+        #product = Product(name=name, description=desc, category=category, brand=brand)
+        product = Product(name=name, description=desc, category=category, brand=brand, img=img)
+        product.put()
         order = Order.get_by_id(int(order_id))
         order.products.append(product)
         order.put()
@@ -160,6 +163,54 @@ class HomepageHandler(webapp2.RequestHandler):
         self.response.write(template.render(template_var))
 
 
+class Greeting(ndb.Model):
+    author = ndb.StringProperty()
+    content = ndb.TextProperty()
+    avatar = ndb.BlobProperty()
+    date = ndb.DateTimeProperty(auto_now_add=True)
+
+    def gusetbook_key(guestbook_name=None):
+        return  ndb.Key('Guestbook', guestbook_name or 'default_guestbook')
+
+class StartImage(webapp2.RequestHandler):
+    def get(self):
+        self.response.out.write('<html><body>')
+        guestbook_name = self.request.get('guestbook_name')
+
+        greetings = Greeting.query(
+            ancestor=guestbook_key(guestbook_name)) \
+            .order(-Greeting.date) \
+            .fetch(10)
+
+        for greeting in greetings:
+            if greeting.author:
+                self.response.out.write(
+                    '<b>%s</b> wrote:' % greeting.author)
+            else:
+                self.response.out.write('An anonymous person wrote:')
+            self.response.out.write('<div><img src="/img?img_id=%s"></img>' %
+                                    greeting.key.urlsafe())
+            self.response.out.write('<blockquote>%s</blockquote></div>' %
+                                    cgi.escape(greeting.content))
+
+            self.response.out.write("""
+                         <form action="/sign?%s"
+                               enctype="multipart/form-data"
+                               method="post">
+                           <div>
+                             <textarea name="content" rows="3" cols="60"></textarea>
+                           </div>
+                           <div><label>Avatar:</label></div>
+                           <div><input type="file" name="img"/></div>
+                           <div><input type="submit" value="Sign Guestbook"></div>
+                         </form>
+                         <hr>
+                         <form>Guestbook name: <input value="%s" name="guestbook_name">
+                         <input type="submit" value="switch"></form>
+                       </body>
+                     </html>""" % (urllib.urlencode({'guestbook_name': guestbook_name}),
+                                   cgi.escape(guestbook_name)))
+
 class Image(webapp2.RequestHandler):
     def get(self):
         greeting_key = ndb.Key(urlsafe=self.request.get('img_id'))
@@ -169,6 +220,23 @@ class Image(webapp2.RequestHandler):
             self.response.out.write(greeting.avatar)
         else:
             self.response.out.write('No image')
+
+class Guestbook(webapp2.RequestHandler):
+    def post(self):
+        guestbook_name = self.request.get('guestbook_name')
+        greeting = Greeting(parent=guestbook_key(guestbook_name))
+
+        if users.get_current_user():
+            greeting.author = users.get_current_user().nickname()
+
+        greeting.content = self.request.get('content')
+        avatar = self.request.get('img')
+        avatar = images.resize(avatar, 32, 32)
+        greeting.avatar = avatar
+        greeting.put()
+        self.redirect('/?' + urllib.urlencode({'guestbook_name': guestbook_name}))
+
+
 
 
 class MyOrdersHandler(webapp2.RequestHandler):
@@ -370,5 +438,6 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/accept', TradeAcceptHandler),
     ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
     ('/order/(\d+)/comment/add', AddCommentHandler),
-    ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler)
+    ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
+    ('/order/(\d+)/offer/(\d+)/image/add',Image)
 ], debug=True)
