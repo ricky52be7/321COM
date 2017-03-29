@@ -25,7 +25,7 @@ class Order(ndb.Model):
 
     @classmethod
     def get_my_order(cls):
-        return cls.query(cls.status == 1).order(-cls.update_at).fetch()
+        return cls.query().order(-cls.update_at).fetch()
 
     @classmethod
     def search(cls, name, category_id, brand_id):

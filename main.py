@@ -27,7 +27,7 @@ from entities.Offer import Offer
 from entities.Order import Order
 from entities.Account import Account
 from entities.Trade import Trade
-from google.appengine.api import users
+from google.appengine.api import users, mail
 from google.appengine.api import images
 from google.appengine.ext import ndb
 
@@ -144,7 +144,7 @@ class HomepageHandler(webapp2.RequestHandler):
             auth_link = users.create_logout_url(self.request.url)
         else:
             auth_link = users.create_login_url(self.request.url)
-        if (self.request.get('search') == ""):
+        if not self.request.get('search', ""):
             ordervar = Order.query(Order.status == Order.STATUS_VALID).order(Order.create_at).fetch()
         else:
             str = self.request.get('search')
@@ -179,6 +179,7 @@ class MyOrdersHandler(webapp2.RequestHandler):
             "brands": Brand.query().order(Brand.name).fetch(),
             "orders": Order.get_my_order(),
             "users": users,
+            "status": Order.STATUS,
         }
         self.response.write(template.render(template_var))
 
@@ -297,6 +298,15 @@ class TradeAcceptHandler(webapp2.RequestHandler):
                 order = Order.get_by_id(int(order_id))
                 order.status = Order.STATUS_INVALID
                 order.put()
+                mail.send_mail(sender="321com@com-159616.appspotmail.com",
+                               to=users.User(_user_id=order.user.id).email(),
+                               subject="test",
+                               body="test")
+                offer = Offer.get_by_id(int(offer_id))
+                mail.send_mail(sender="321com@com-159616.appspotmail.com",
+                               to=users.User(_user_id=offer.user.id).email(),
+                               subject="test",
+                               body="test")
             else:
                 t.status = Trade.STATUS_REJECT
             t.put()
@@ -332,7 +342,18 @@ class AddCommentHandler(webapp2.RequestHandler):
 class SearchOrderHandler(webapp2.RequestHandler):
     def get(self):
         str = self.request.get('search')
-        self.response.write(self,str)
+        # self.response.write(self, str)
+        #template = JINJA_ENVIRONMENT.get_template('homepage.html')
+        #template_var = {
+        #    "categories": Category.query().order(Category.name).fetch(),
+        #    "brands": Brand.query().order(Brand.name).fetch(),
+        #    "orders": Order.search_name_lc(str),
+        #    "users": users
+        #}
+        #self.response.write(template.render(template_var))
+        #self.redirect("/order/" + str + "/view")
+        #self.redirect("/order/search/" + str)
+        self.response.write(self, str)
         HomepageHandler()
 
 
