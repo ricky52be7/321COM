@@ -107,7 +107,8 @@ class ProductAddHandler(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('product_add.html')
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
-            "brands": Brand.query().order(Brand.name).fetch()
+            "brands": Brand.query().order(Brand.name).fetch(),
+            "img": Product.query().order(Product.img).fetch()
             # self.response.out.write('<div><img src="/img?img_id=%s"></img>' %
             #                         greeting.key.urlsafe())
             # self.response.out.write('<blockquote>%s</blockquote></div>' %
@@ -173,13 +174,8 @@ class Greeting(ndb.Model):
 
 class StartImage(webapp2.RequestHandler):
     def get(self):
-        template = JINJA_ENVIRONMENT.get_template('product_add.html')
-        template_var = {
-            "img": Product.query().order(Product.img).fetch()
-        }
-        self.response.out.write(template.render(template_var))
-    def post(self):
-        image =
+        image = Product.img
+        self.response.out.write('<div><img src="/img?img_id=%s"></img>' % image)
 
 
 
@@ -394,6 +390,5 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
     ('/order/(\d+)/comment/add', AddCommentHandler),
     ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
-    ('/order/(\d+)/offer/(\d+)/image/add',Image),
-    ('/order/addImage',)
+    ('/order/addImage',StartImage)
 ], debug=True)
