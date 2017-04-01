@@ -108,7 +108,7 @@ class ProductAddHandler(webapp2.RequestHandler):
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "brands": Brand.query().order(Brand.name).fetch(),
-            "img": Product.query().order(Product.img).fetch()
+            # "img": Product.query().order(Product.img).fetch()
             # self.response.out.write('<div><img src="/img?img_id=%s"></img>' %
             #                         greeting.key.urlsafe())
             # self.response.out.write('<blockquote>%s</blockquote></div>' %
@@ -162,22 +162,12 @@ class HomepageHandler(webapp2.RequestHandler):
         }
         self.response.write(template.render(template_var))
 
-
-class Greeting(ndb.Model):
-    author = ndb.StringProperty()
-    content = ndb.TextProperty()
-    avatar = ndb.BlobProperty()
-    date = ndb.DateTimeProperty(auto_now_add=True)
-
-    def gusetbook_key(guestbook_name=None):
-        return  ndb.Key('Guestbook', guestbook_name or 'default_guestbook')
-
 class StartImage(webapp2.RequestHandler):
-    def get(self):
-        image = Product.img
+    def get(self, order_id):
+        order = Order.get_by_id(int(order_id))
+        order.products
+        # image = Product.img
         self.response.out.write('<div><img src="/img?img_id=%s"></img>' % image)
-
-
 
 class Image(webapp2.RequestHandler):
     def get(self):
@@ -390,5 +380,5 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
     ('/order/(\d+)/comment/add', AddCommentHandler),
     ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
-    ('/order/addImage',StartImage)
+    ('/order/(\d+)/addImage',StartImage)
 ], debug=True)
