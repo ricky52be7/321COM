@@ -62,7 +62,7 @@
             <label for="status">Status</label>
             <select id="status" name="status">
                 {% for i in range(status|length) %}
-                <option value="{{ status.keys()[i] }}" {% if status.keys()[i]== offer.status %} selected="selected" {%
+                <option value="{{ status.keys()[i] }}" {% if status.keys()[i] == offer.status %} selected="selected" {%
                         endif %}>
                     {{ status[i+1] }}
                 </option>

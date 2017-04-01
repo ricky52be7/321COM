@@ -16,25 +16,20 @@
 #
 import os
 
-import webapp2
 import jinja2
-import logging
-import cgi
-import urllib
+import webapp2
+from google.appengine.api import images
+from google.appengine.api import users, mail
+from google.appengine.ext import db
 
+from entities.Account import Account
 from entities.Brand import Brand
 from entities.Category import Category
 from entities.Comment import Comment
 from entities.Offer import Offer
 from entities.Order import Order
-from entities.Account import Account
-from entities.Trade import Trade
-from google.appengine.api import users, mail
-from google.appengine.api import images
-from google.appengine.ext import ndb
-
-
 from entities.Product import Product
+from entities.Trade import Trade
 
 template_dir = os.path.join(os.path.dirname(__file__), 'www/templates')
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -122,9 +117,9 @@ class ProductAddHandler(webapp2.RequestHandler):
         category = Category.get_by_id(int(self.request.get("category")))
         # status = self.request.get("status")
         brand = Brand.get_by_id(int(self.request.get("brand")))
-        img = self.request.get("img", None)
-        #product = Product(name=name, description=desc, category=category, brand=brand)
-        product = Product(name=name, description=desc, category=category, brand=brand, img=img)
+        img = self.request.get("photo", None)
+        # product = Product(name=name, description=desc, category=category, brand=brand)
+        product = Product(name=name, description=desc, category=category, brand=brand, img=db.Blob(img))
         product.put()
         order = Order.get_by_id(int(order_id))
         order.products.append(product)
@@ -135,7 +130,7 @@ class ProductAddHandler(webapp2.RequestHandler):
 class SearchOrderHandler(webapp2.RequestHandler):
     def get(self):
         str = self.request.get('search')
-        self.response.write(self,str)
+        self.response.write(self, str)
         HomepageHandler()
 
 
@@ -162,22 +157,23 @@ class HomepageHandler(webapp2.RequestHandler):
         }
         self.response.write(template.render(template_var))
 
+
 class StartImage(webapp2.RequestHandler):
     def get(self, order_id):
         order = Order.get_by_id(int(order_id))
-        order.products
-        # image = Product.img
-        self.response.out.write('<div><img src="/img?img_id=%s"></img>' % image)
+        for product in order.products:
+            if product.img:
+                self.response.headers['Content-Type'] = 'image/png'
+                self.response.out.write(product.img)
 
-class Image(webapp2.RequestHandler):
-    def get(self):
-        greeting_key = ndb.Key(urlsafe=self.request.get('img_id'))
-        greeting = greeting_key.get()
-        if greeting.avatar:
+
+class ProductImage(webapp2.RequestHandler):
+    def get(self, order_id, product_num):
+        order = Order.get_by_id(int(order_id))
+        product = order.products[int(product_num)]
+        if product.img:
             self.response.headers['Content-Type'] = 'image/png'
-            self.response.out.write(greeting.avatar)
-        else:
-            self.response.out.write('No image')
+            self.response.out.write(product.img)
 
 
 class MyOrdersHandler(webapp2.RequestHandler):
@@ -380,5 +376,6 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
     ('/order/(\d+)/comment/add', AddCommentHandler),
     ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
-    ('/order/(\d+)/addImage',StartImage)
+    ('/order/(\d+)/img', StartImage),
+    ('/order/(\d+)/product/(\d+)/img', ProductImage),
 ], debug=True)

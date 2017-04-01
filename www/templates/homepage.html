@@ -78,10 +78,9 @@
         <a href="/order/{{ order.key.id() }}/view">
             <div class="order-cell">
                 <img class="pure-img"
-                     src="{{ product.img }}">
+                     src="/order/{{ order.key.id() }}/img">
                     <p>{{order.name}}<br>
                         {{order.description}}</p>
-                </div>
             </div>
         </a>
     </div>
