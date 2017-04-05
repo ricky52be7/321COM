@@ -379,3 +379,4 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/img', StartImage),
     ('/order/(\d+)/product/(\d+)/img', ProductImage),
 ], debug=True)
+# to ricky
