@@ -34,7 +34,7 @@
     <fieldset>
         <input class="pure-input-1 pure-input-rounded" id="search" name="search" type="text" placeholder="Search" value=""/>
 
-        <label for="category">Category</label>
+        <!--<label for="category">Category</label>
         <select id="category" name="category" class="pure-input-1">
             {% for category in categories %}
             <option value="{{ category.key.id() }}">{{ category.name }}</option>
@@ -46,7 +46,7 @@
             {% for brand in brands %}
             <option value="{{ brand.key.id() }}">{{ brand.name }}</option>
             {% endfor %}
-        </select>
+        </select> -->
         <button type="submit" class="pure-button pure-button-primary pure-input-1">Search</button>
     </fieldset>
 </form>
@@ -63,7 +63,7 @@
          <a class="secondary-button pure-button" href="/admin">Dashboard</a>
         {% endif %}
     <a class="secondary-button pure-button" href="/{{ users.get_current_user().user_id() }}/orders">My Trading</a>
-    <a class="secondary-button pure-button" href="/order/add">Add My Products</a>
+    <a class="secondary-button pure-button" href="/order/add">Add My Request</a>
     <a class="secondary-button pure-button" href="{{ auth_link }}">Logout</a>
     {% else %}
     <a class="secondary-button pure-button" href="{{ auth_link }}">Login</a>

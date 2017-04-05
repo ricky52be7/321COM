@@ -33,7 +33,7 @@
 <form class="pure-form pure-form-stacked" id="search-form">
     <fieldset>
         <input class="pure-input-1 pure-input-rounded" id="search" name="search" type="text" placeholder="Search">
-
+        <!--
         <label for="category">Category</label>
         <select id="category" name="category" class="pure-input-1">
             {% for category in categories %}
@@ -46,7 +46,7 @@
             {% for brand in brands %}
             <option value="{{ brand.key.id() }}">{{ brand.name }}</option>
             {% endfor %}
-        </select>
+        </select> -->
         <button type="submit" class="pure-button pure-button-primary pure-input-1">Search</button>
     </fieldset>
 </form>
