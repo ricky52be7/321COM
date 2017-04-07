@@ -65,6 +65,7 @@
     {% else %}
     <a class="secondary-button pure-button" href="{{ auth_link }}">Login</a>
     {% endif %}
+    <p class="show-current-user">{{users.get_current_user()}}</p>
 </div>
 {% endblock %}
 

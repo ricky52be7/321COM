@@ -38,7 +38,7 @@
 
 {% block content_header %}
 <div class="pure-u-1-3">
-    <h1 class="main-content-title">Request Details</h1>
+    <h1 class="main-content-title">Product Details</h1>
     <p class="main-content-subtitle"></p>
 </div>
 <div class="main-content-controls pure-u-2-3">
@@ -52,6 +52,7 @@
     {% else %}
     <a class="secondary-button pure-button" href="{{ auth_link }}">Login</a>
     {% endif %}
+    <p class="show-current-user">{{users.get_current_user()}}</p>
 </div>
 {% endblock %}
 
@@ -59,7 +60,7 @@
 <form class="pure-form pure-form-aligned">
     <fieldset>
         <div class="pure-control-group">
-            <label for="name">Request Name</label>
+            <label for="name">Product Name</label>
             {{ order.name }}
         </div>
 
@@ -117,11 +118,11 @@
 {% if users.get_current_user() %}
 {#% if users.get_current_user().user_id() != order.user.id %#}
 <div class="pure-u-1" style="text-align: center">
-    <a class="pure-button" href="/order/{{ order.key.id() }}/offer/add">Trade Request</a>
+    <a class="pure-button" href="/order/{{ order.key.id() }}/offer/add">Ask For Trade</a>
 </div>
 {#% endif %#}
 {% endif %}
-Comments
+Leave a comments if you got any question to ask!!!
 <hr>
 {% if comments|length > 0 %}
     {% for comment in comments %}
@@ -146,7 +147,7 @@ Comments
             placeholder="Please add your comment here!"></textarea>
         </div>
         <div class="pure-controls">
-            <button type="submit" class="pure-button pure-button-primary">Submit</button>
+            <button type="submit" class="pure-button pure-button-primary">Submit Comment</button>
         </div>
     </fieldset>
 </form>

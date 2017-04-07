@@ -175,7 +175,6 @@ class ProductImage(webapp2.RequestHandler):
             self.response.headers['Content-Type'] = 'image/png'
             self.response.out.write(product.img)
 
-
 class MyOrdersHandler(webapp2.RequestHandler):
     def get(self, user_id):
         template = JINJA_ENVIRONMENT.get_template('my_order.html')

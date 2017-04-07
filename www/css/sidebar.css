@@ -193,6 +193,12 @@ a {
     height: 40px;
 }
 
+.content-title {
+    font-size: 1em;
+    text-transform: uppercase;
+    color: #000000;
+}
+
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  * On tablets and other medium-sized devices, we want to customize some
