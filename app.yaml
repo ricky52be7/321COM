@@ -12,6 +12,9 @@ handlers:
 - url: /css
   static_dir: www/css
 
+- url: /.*/img
+  script: main.app
+
 - url: /order.*
   script: main.app
   login: required
@@ -29,6 +32,7 @@ handlers:
 
 - url: /(\d+)/orders
   script: main.app
+  login: required
 
 - url: /test
   script: admin.test.app

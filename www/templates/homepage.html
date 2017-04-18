@@ -68,14 +68,16 @@
     {% else %}
     <a class="secondary-button pure-button" href="{{ auth_link }}">Login</a>
     {% endif %}
-    <p class="show-current-user">{{users.get_current_user()}}</p>
 </div>
+{% if users.get_current_user() %}
+<div class="pure-u-1" style="text-align: right">
+    <p class="show-current-user">welcome! {{users.get_current_user()}}</p>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block content_body %}
-<div class="content-title">
-        <h1 class="content-title">Product List</h1>
-</div>
+<h1 class="content-title">Latest Offer</h1>
 <div class="pure-g">
     {% for order in orders %}
     <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
@@ -84,7 +86,7 @@
                 <img class="pure-img"
                      src="/order/{{ order.key.id() }}/img">
                     <p>Title: {{order.name}}<br>
-                        Description: {{order.description}}<br><br>
+                        Description: {{order.description}}<br>
                         Created By: {{order.user.name}}</p>
             </div>
         </a>

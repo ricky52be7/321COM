@@ -158,7 +158,7 @@ class HomepageHandler(webapp2.RequestHandler):
         self.response.write(template.render(template_var))
 
 
-class StartImage(webapp2.RequestHandler):
+class OrderImage(webapp2.RequestHandler):
     def get(self, order_id):
         order = Order.get_by_id(int(order_id))
         for product in order.products:
@@ -174,6 +174,16 @@ class ProductImage(webapp2.RequestHandler):
         if product.img:
             self.response.headers['Content-Type'] = 'image/png'
             self.response.out.write(product.img)
+
+
+class OfferImage(webapp2.RequestHandler):
+    def get(self, order_id, offer_id, product_num):
+        offer = Offer.get_by_id(int(offer_id))
+        product = offer.products[int(product_num)]
+        if product.img:
+            self.response.headers['Content-Type'] = 'image/png'
+            self.response.out.write(product.img)
+
 
 class MyOrdersHandler(webapp2.RequestHandler):
     def get(self, user_id):
@@ -231,13 +241,14 @@ class OfferViewHandler(webapp2.RequestHandler):
         else:
             auth_link = users.create_login_url(self.request.url)
         offer = Offer.get_by_id(int(offer_id))
+        order = Order.get_by_id(int(order_id))
         template_var = {
             "categories": Category.query().order(Category.name).fetch(),
             "offer": offer,
             "products": offer.products,
             "users": users,
             "auth_link": auth_link,
-            "order_id": order_id,
+            "order": order,
         }
         self.response.write(template.render(template_var))
 
@@ -246,10 +257,13 @@ class OfferAddHandler(webapp2.RequestHandler):
     def get(self, order_id, offer_id):
         template = JINJA_ENVIRONMENT.get_template('offer_add.html')
         offer = Offer.get_by_id(int(offer_id))
+        order = Order.get_by_id(int(order_id))
         template_var = {
             "products": offer.products,
             "offer": offer,
             "order_id": order_id,
+            "order": order,
+            "users": users,
         }
         self.response.write(template.render(template_var))
 
@@ -280,8 +294,9 @@ class AddOfferProductHandler(webapp2.RequestHandler):
         category = Category.get_by_id(int(self.request.get("category")))
         # status = self.request.get("status")
         brand = Brand.get_by_id(int(self.request.get("brand")))
-        # img = self.request.get("photo", None)
-        product = Product(name=name, description=desc, category=category, brand=brand)
+        img = self.request.get("photo", None)
+        # product = Product(name=name, description=desc, category=category, brand=brand)
+        product = Product(name=name, description=desc, category=category, brand=brand, img=db.Blob(img))
         # product = Product(name=name, description=desc, category=category, brand=brand, img=img)
         # product.put()
         offer = Offer.get_by_id(int(offer_id))
@@ -375,7 +390,7 @@ app = webapp2.WSGIApplication([
     ('/order/(\d+)/offer/(\d+)/reject', TradeRejectHandler),
     ('/order/(\d+)/comment/add', AddCommentHandler),
     ('/order/(\d+)/offer/(\d+)/view', OfferViewHandler),
-    ('/order/(\d+)/img', StartImage),
+    ('/order/(\d+)/img', OrderImage),
     ('/order/(\d+)/product/(\d+)/img', ProductImage),
+    ('/order/(\d+)/offer/(\d+)/product/(\d+)/img', OfferImage),
 ], debug=True)
-# to ricky

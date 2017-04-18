@@ -52,7 +52,6 @@
     {% else %}
     <a class="secondary-button pure-button" href="{{ auth_link }}">Login</a>
     {% endif %}
-    <p class="show-current-user">{{users.get_current_user()}}</p>
 </div>
 {% endblock %}
 
@@ -77,8 +76,8 @@
                     <img class="pure-img"
                          src = "/order/{{ order.key.id() }}/product/{{i}}/img" >
                     <div class="order-cell-desc">
-                        <p>{{ products[i].name }}<br>
-                            {{ products[i].description }}</p>
+                        <p>Name: {{ products[i].name }}<br>
+                            Description: {{ products[i].description }}</p>
                     </div>
                 </div>
             </div>
@@ -122,7 +121,7 @@
 </div>
 {#% endif %#}
 {% endif %}
-Leave a comments if you got any question to ask!!!
+User Comments
 <hr>
 {% if comments|length > 0 %}
     {% for comment in comments %}
@@ -130,6 +129,10 @@ Leave a comments if you got any question to ask!!!
             <div class="pure-control-group">
                 <label>user:</label>
                 {{ comment.user.name }}
+            </div>
+            <div class="pure-control-group">
+                <label>time:</label>
+                {{ comment.update_at.strftime("%Y-%m-%d %H:%M") }}
             </div>
             <div class="pure-control-group">
                 <label>comment:</label>
@@ -144,7 +147,7 @@ Leave a comments if you got any question to ask!!!
         <div class="pure-control-group">
             <label for="comment"></label>
             <textarea name="comment" id="comment" class="pure-u-1 pure-u-md-1-2"
-            placeholder="Please add your comment here!"></textarea>
+            placeholder="Please leave your comment here if you got any question!"></textarea>
         </div>
         <div class="pure-controls">
             <button type="submit" class="pure-button pure-button-primary">Submit Comment</button>
